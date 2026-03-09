@@ -1,11 +1,11 @@
-package com.example.libraryapi.dto;
+package com.example.libraryapi.dto.v1;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class BookRequest {
+public class BookRequestV1 {
     @NotBlank(message = "Title is required")
     @Schema(description = "The title of the book", example = "The Lord of the Rings", requiredMode = Schema.RequiredMode.REQUIRED, nullable = false)
     private String title;
@@ -18,15 +18,15 @@ public class BookRequest {
     @Schema(description = "The year the book was published", example = "1954", requiredMode = Schema.RequiredMode.NOT_REQUIRED, nullable = true)
     private int publishedYear;
 
-    public BookRequest() {
+    public BookRequestV1() {
         this("", "");
     }
 
-    public BookRequest(@Nonnull String title, @Nonnull String author) {
+    public BookRequestV1(@Nonnull String title, @Nonnull String author) {
         this(title, author, null, 0);
     }
 
-    public BookRequest(@Nonnull String title, @Nonnull String author, @Nullable String isbn, int publishedYear) {
+    public BookRequestV1(@Nonnull String title, @Nonnull String author, @Nullable String isbn, int publishedYear) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;

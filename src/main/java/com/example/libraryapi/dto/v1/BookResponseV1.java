@@ -1,9 +1,9 @@
-package com.example.libraryapi.dto;
+package com.example.libraryapi.dto.v1;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
-public class BookResponse {
+public class BookResponseV1 {
     @Nonnull
     private Long id;
     @Nonnull
@@ -14,10 +14,10 @@ public class BookResponse {
     private String isbn;
     private int publishedYear;
 
-    public BookResponse() {
+    public BookResponseV1() {
     }
 
-    public BookResponse(@Nonnull Long id, @Nonnull String title, @Nonnull String author, @Nullable String isbn, int publishedYear) {
+    public BookResponseV1(@Nonnull Long id, @Nonnull String title, @Nonnull String author, @Nullable String isbn, int publishedYear) {
         this.id = id;
         this.title = title;
         this.author = author;
