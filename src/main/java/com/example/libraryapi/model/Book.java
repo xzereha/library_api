@@ -1,5 +1,6 @@
 package com.example.libraryapi.model;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,7 +11,9 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Nonnull
     private String title;
+    @Nonnull
     private String author;
     private String isbn;
     private int publishedYear;
