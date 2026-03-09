@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 
+@Schema(description = "Response payload for book details")
 public class BookResponseV1 {
     @Nonnull
     @Schema(description = "The unique identifier of the book", example = "1", requiredMode = Schema.RequiredMode.REQUIRED, nullable = false)

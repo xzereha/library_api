@@ -2,6 +2,7 @@ package com.example.libraryapi.service;
 
 import java.util.List;
 
+import com.example.libraryapi.exception.BookNotFoundException;
 import com.example.libraryapi.model.Book;
 
 import jakarta.annotation.Nonnull;
@@ -11,4 +12,6 @@ public interface BookService {
     @Nonnull Book createBook(@Nonnull @NotBlank String title, @Nonnull @NotBlank String author, String isbn, int publishedYear);
 
     @Nonnull List<Book> getAllBooks();
+
+    @Nonnull Book getBookById(@Nonnull Long id) throws BookNotFoundException;
 }

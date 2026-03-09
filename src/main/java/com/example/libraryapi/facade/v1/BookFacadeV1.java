@@ -27,4 +27,9 @@ public class BookFacadeV1 {
             .map(book -> new BookResponseV1(book.getId(), book.getTitle(), book.getAuthor(), book.getIsbn(), book.getPublishedYear()))
             .toList();
     }
+
+    public BookResponseV1 getBookById(Long id) {
+        var book = bookService.getBookById(id);
+        return new BookResponseV1(book.getId(), book.getTitle(), book.getAuthor(), book.getIsbn(), book.getPublishedYear());
+    }
 }

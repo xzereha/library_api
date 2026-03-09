@@ -47,8 +47,12 @@ public class BookV1Controller {
         return ResponseEntity.ok(books);
     }
 
-    @GetMapping("/{id}")
-    public String getBookById(@PathVariable final Long id) {
-        return "Book details (v1) for ID: " + id;
+    @GetMapping(
+        value = "/{id}",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<BookResponseV1> getBookById(@PathVariable final Long id) {
+        var book = bookFacade.getBookById(id);
+        return ResponseEntity.ok(book);
     }
 }
