@@ -1,6 +1,7 @@
 package com.example.libraryapi.controller;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +39,12 @@ public class BookV1Controller {
         return ResponseEntity.created(location).body(created);
     }
     
-    @GetMapping
-    public String getBooks() {
-        return "List of books (v1)";
+    @GetMapping(
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<BookResponseV1>> getBooks() {
+        var books = bookFacade.getAllBooks();
+        return ResponseEntity.ok(books);
     }
 
     @GetMapping("/{id}")
