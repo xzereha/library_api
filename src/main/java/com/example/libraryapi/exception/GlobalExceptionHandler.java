@@ -15,8 +15,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BookNotFoundException.class)
     public ProblemDetail handleBookNotFoundException(BookNotFoundException ex) {
         var problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
-        problem.setTitle("Book Not Found");
-        problem.setDetail("The requested book was not found. Please check the ID and try again.");
+        problem.setTitle("Not Found");
+        problem.setDetail(ex.getMessage());
         return problem;
     }
 
