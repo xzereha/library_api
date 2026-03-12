@@ -16,7 +16,7 @@ public class Book {
     @Nonnull
     private String author;
     private String isbn;
-    private int publishedYear;
+    private Integer publishedYear;
 
     
     public Book() {
@@ -61,11 +61,11 @@ public class Book {
         this.isbn = isbn;
     }
 
-    public int getPublishedYear() {
+    public Integer getPublishedYear() {
         return publishedYear;
     }
 
-    public void setPublishedYear(int publishedYear) {
+    public void setPublishedYear(Integer publishedYear) {
         this.publishedYear = publishedYear;
     }
 }

@@ -19,7 +19,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book createBook(@NotBlank String title, @NotBlank String author, String isbn, int publishedYear) {
+    public Book createBook(@NotBlank String title, @NotBlank String author, String isbn, Integer publishedYear) {
         var book = new Book();
         book.setTitle(title);
         book.setAuthor(author);
