@@ -41,6 +41,10 @@ spotless {
 	}
 }
 
+tasks.register("format") {
+	dependsOn("spotlessApply")
+}
+
 tasks.named("check") {
 	dependsOn("spotlessCheck")
 }

@@ -1,7 +1,16 @@
 package com.example.libraryapi;
 
-import com.example.libraryapi.repository.BookRepository;
-import com.jayway.jsonpath.JsonPath;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.matchesPattern;
+import static org.hamcrest.Matchers.nullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -11,10 +20,8 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.example.libraryapi.repository.BookRepository;
+import com.jayway.jsonpath.JsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -46,8 +53,8 @@ public class BookV1APIIntegrationTest {
                     """;
 
             mockMvc.perform(post("/api/v1/books")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(bookJson))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(bookJson))
                     .andExpect(status().isCreated())
                     .andExpect(header().string("Location", matchesPattern("/api/v1/books/\\d+")))
                     .andExpect(jsonPath("$.id").exists())
@@ -67,8 +74,8 @@ public class BookV1APIIntegrationTest {
                     """;
 
             mockMvc.perform(post("/api/v1/books")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(bookJson))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(bookJson))
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.id").exists())
                     .andExpect(jsonPath("$.title").value("Moby Dick"))
@@ -87,8 +94,8 @@ public class BookV1APIIntegrationTest {
                     """;
 
             mockMvc.perform(post("/api/v1/books")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(bookJson))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(bookJson))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.status").value(400))
                     .andExpect(jsonPath("$.error").value("Bad Request"))
@@ -101,8 +108,8 @@ public class BookV1APIIntegrationTest {
             String invalidJson = "{ title: not valid json }";
 
             mockMvc.perform(post("/api/v1/books")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(invalidJson))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(invalidJson))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.status").value(400))
                     .andExpect(jsonPath("$.error").value("Bad Request"))
@@ -159,8 +166,8 @@ public class BookV1APIIntegrationTest {
                     """;
 
             var result = mockMvc.perform(post("/api/v1/books")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(bookJson))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(bookJson))
                     .andExpect(status().isCreated())
                     .andReturn();
 

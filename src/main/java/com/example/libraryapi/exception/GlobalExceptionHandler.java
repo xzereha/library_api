@@ -1,7 +1,7 @@
 package com.example.libraryapi.exception;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(BookNotFoundException.class)
     public ProblemDetail handleBookNotFoundException(BookNotFoundException ex, HttpServletRequest request) {
@@ -30,10 +32,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ProblemDetail handleMismatchedInputException(HttpMessageNotReadableException ex, HttpServletRequest request) {
+    public ProblemDetail handleMismatchedInputException(
+            HttpMessageNotReadableException ex,
+            HttpServletRequest request) {
         return buildProblem(
                 HttpStatus.BAD_REQUEST,
-                "Can't parse request body. Please ensure the JSON structure is correct and all required fields are provided.",
+                "Can't parse request body. "
+                        + "Please ensure the JSON structure is correct and all required fields are provided.",
                 request);
     }
 
@@ -47,7 +52,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleUnknownException(Exception ex, HttpServletRequest request) {
-        log.error("Unexpected error: ", ex);
+        LOG.error("Unexpected error: ", ex);
         return buildProblem(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "An unexpected error occurred. Please try again later.",

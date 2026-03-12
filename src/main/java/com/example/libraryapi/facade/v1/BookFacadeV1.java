@@ -17,7 +17,9 @@ public class BookFacadeV1 {
     }
 
     public BookResponseV1 createBook(BookRequestV1 bookRequest) {
-        var book = bookService.createBook(bookRequest.title(), bookRequest.author(), bookRequest.isbn(),
+        var book = bookService.createBook(bookRequest.title(),
+                bookRequest.author(),
+                bookRequest.isbn(),
                 bookRequest.publishedYear());
         return new BookResponseV1(book.getId(), book.getTitle(), book.getAuthor(), book.getIsbn(),
                 book.getPublishedYear());

@@ -10,7 +10,10 @@ import jakarta.validation.constraints.NotBlank;
 
 public interface BookService {
     @Nonnull
-    Book createBook(@Nonnull @NotBlank String title, @Nonnull @NotBlank String author, String isbn,
+    Book createBook(
+            @Nonnull @NotBlank String title,
+            @Nonnull @NotBlank String author,
+            String isbn,
             Integer publishedYear);
 
     @Nonnull

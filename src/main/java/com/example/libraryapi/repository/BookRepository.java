@@ -8,5 +8,4 @@ import com.example.libraryapi.model.Book;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
 
-    
 }
