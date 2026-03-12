@@ -36,6 +36,11 @@ spotless {
 	java {
 		target("src/*/java/**/*.java")
 		eclipse().configFile("config/formatter/eclipse-java-style.xml")
+		replaceRegex(
+			"scopeIndentation",
+			"(?m)^ {20}(\\.and(?:Expect|Do|Return)\\()",
+			"                $1"
+		)
 		trimTrailingWhitespace()
 		endWithNewline()
 	}
