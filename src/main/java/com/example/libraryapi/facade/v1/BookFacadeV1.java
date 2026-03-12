@@ -17,19 +17,23 @@ public class BookFacadeV1 {
     }
 
     public BookResponseV1 createBook(BookRequestV1 bookRequest) {
-        var book = bookService.createBook(bookRequest.getTitle(), bookRequest.getAuthor(), bookRequest.getIsbn(), bookRequest.getPublishedYear());
-        return new BookResponseV1(book.getId(), book.getTitle(), book.getAuthor(), book.getIsbn(), book.getPublishedYear());
+        var book = bookService.createBook(bookRequest.title(), bookRequest.author(), bookRequest.isbn(),
+                bookRequest.publishedYear());
+        return new BookResponseV1(book.getId(), book.getTitle(), book.getAuthor(), book.getIsbn(),
+                book.getPublishedYear());
     }
 
     public List<BookResponseV1> getAllBooks() {
         var books = bookService.getAllBooks();
         return books.stream()
-            .map(book -> new BookResponseV1(book.getId(), book.getTitle(), book.getAuthor(), book.getIsbn(), book.getPublishedYear()))
-            .toList();
+                .map(book -> new BookResponseV1(book.getId(), book.getTitle(), book.getAuthor(), book.getIsbn(),
+                        book.getPublishedYear()))
+                .toList();
     }
 
     public BookResponseV1 getBookById(Long id) {
         var book = bookService.getBookById(id);
-        return new BookResponseV1(book.getId(), book.getTitle(), book.getAuthor(), book.getIsbn(), book.getPublishedYear());
+        return new BookResponseV1(book.getId(), book.getTitle(), book.getAuthor(), book.getIsbn(),
+                book.getPublishedYear());
     }
 }

@@ -26,32 +26,25 @@ public class BookV2Controller {
 
     public BookV2Controller(BookFacadeV2 bookFacadeV2) {
         this.bookFacadeV2 = bookFacadeV2;
-    }    
-    
-    @PostMapping(
-        consumes = MediaType.APPLICATION_JSON_VALUE,
-        produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<ResponseWrapper<BookResponseV2>> createBook(@Valid @RequestBody final BookRequestV1 bookRequest) {
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseWrapper<BookResponseV2>> createBook(
+            @Valid @RequestBody final BookRequestV1 bookRequest) {
         var created = bookFacadeV2.createBook(bookRequest);
         var response = new ResponseWrapper<>(created, 2);
-        var location = URI.create("/api/v2/books/" + created.getId());
+        var location = URI.create("/api/v2/books/" + created.id());
         return ResponseEntity.created(location).body(response);
     }
-    
-    @GetMapping(
-        produces = MediaType.APPLICATION_JSON_VALUE
-    )
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseWrapper<List<BookResponseV2>>> getBooks() {
         var books = bookFacadeV2.getAllBooks();
         var response = new ResponseWrapper<>(books, 2);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(
-        value = "/{id}",
-        produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseWrapper<BookResponseV2>> getBookById(@PathVariable final Long id) {
         var book = bookFacadeV2.getBookById(id);
         var response = new ResponseWrapper<>(book, 2);

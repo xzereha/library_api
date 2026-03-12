@@ -35,7 +35,7 @@ public class BookV1Controller {
     public ResponseEntity<BookResponseV1> createBook(@Valid @RequestBody final BookRequestV1 bookRequest) {
         var created = bookFacade.createBook(bookRequest);
 
-        var location = URI.create("/api/v1/books/" + created.getId());
+        var location = URI.create("/api/v1/books/" + created.id());
         return ResponseEntity.created(location).body(created);
     }
     
