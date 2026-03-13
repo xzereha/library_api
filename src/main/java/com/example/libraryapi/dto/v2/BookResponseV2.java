@@ -1,5 +1,7 @@
 package com.example.libraryapi.dto.v2;
 
+import com.example.libraryapi.model.Book;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
@@ -37,4 +39,13 @@ public record BookResponseV2(
                 example = "true",
                 requiredMode = Schema.RequiredMode.NOT_REQUIRED,
                 nullable = true) Boolean available) {
+    public static BookResponseV2 fromBook(Book book) {
+        return new BookResponseV2(
+                book.getId(),
+                book.getTitle(),
+                book.getAuthor(),
+                book.getIsbn(),
+                book.getPublishedYear(),
+                book.isAvailable());
+    }
 }

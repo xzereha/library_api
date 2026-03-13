@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.example.libraryapi.exception.BookNotFoundException;
 import com.example.libraryapi.model.Book;
 import com.example.libraryapi.repository.BookRepository;
+import com.example.libraryapi.repository.BookSpecifications;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -37,5 +38,11 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book getBookById(Long id) throws BookNotFoundException {
         return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+    }
+
+    @Override
+    public List<Book> queryBooks(BookQuery query) {
+        var spec = BookSpecifications.fromQuery(query);
+        return bookRepository.findAll(spec);
     }
 }

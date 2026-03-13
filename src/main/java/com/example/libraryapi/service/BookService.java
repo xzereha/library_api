@@ -21,4 +21,7 @@ public interface BookService {
 
     @Nonnull
     Book getBookById(@Nonnull Long id) throws BookNotFoundException;
+
+    @Nonnull
+    List<Book> queryBooks(@Nonnull BookQuery query);
 }
