@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.libraryapi.dto.ResponseWrapper;
 import com.example.libraryapi.dto.v1.BookRequestV1;
 import com.example.libraryapi.dto.v2.BookResponseV2;
 import com.example.libraryapi.facade.v2.BookFacadeV2;
+import com.example.libraryapi.service.BookQuery;
 
 import jakarta.validation.Valid;
 
@@ -38,9 +40,17 @@ public class BookV2Controller {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseWrapper<List<BookResponseV2>>> getBooks() {
-        var books = bookFacadeV2.getAllBooks();
-        var response = new ResponseWrapper<>(books, 2);
+    public ResponseEntity<ResponseWrapper<List<BookResponseV2>>> getBooks(
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String isbn) {
+        var query = BookQuery.builder()
+                .withAuthor(author)
+                .withTitle(title)
+                .withIsbn(isbn)
+                .build();
+        var booksByAuthor = bookFacadeV2.queryBooks(query);
+        var response = new ResponseWrapper<>(booksByAuthor, 2);
         return ResponseEntity.ok(response);
     }
 

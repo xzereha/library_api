@@ -17,6 +17,7 @@ public class Book {
     private String author;
     private String isbn;
     private Integer publishedYear;
+    private boolean available = false;
 
     public Book() {
     }
@@ -55,5 +56,13 @@ public class Book {
 
     public void setPublishedYear(Integer publishedYear) {
         this.publishedYear = publishedYear;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 }

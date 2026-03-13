@@ -210,4 +210,190 @@ public class BookV2APIIntegrationTest {
                 .andExpect(jsonPath("$.path").value("/api/v2/books/abc"));
         }
     }
+
+    @Nested
+
+    class FilteredGet {
+        @Test
+        void returnsBooksByAuthor() throws Exception {
+            String book1 = """
+                    { "title": "1984", "author": "George Orwell" }
+                    """;
+            String book2 = """
+                    { "title": "Animal Farm", "author": "George Orwell" }
+                    """;
+            String book3 = """
+                    { "title": "Brave New World", "author": "Aldous Huxley" }
+                    """;
+
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book1))
+                .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book2))
+                .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book3))
+                .andExpect(status().isCreated());
+
+            mockMvc.perform(get("/api/v2/books?author=George Orwell"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.version").value(2))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(2))
+                .andExpect(jsonPath("$.data[*].title", hasItems("1984", "Animal Farm")))
+                .andExpect(jsonPath("$.data[*].author", everyItem(is("George Orwell"))));
+        }
+
+        @Test
+        void returnsBooksByTitle() throws Exception {
+            String book1 = """
+                    { "title": "The Great Gatsby", "author": "F. Scott Fitzgerald" }
+                    """;
+            String book2 = """
+                    { "title": "Great Expectations", "author": "Charles Dickens" }
+                    """;
+            String book3 = """
+                    { "title": "Brave New World", "author": "Aldous Huxley" }
+                    """;
+
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book1))
+                .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book2))
+                .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book3))
+                .andExpect(status().isCreated());
+
+            mockMvc.perform(get("/api/v2/books?title=Great"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.version").value(2))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(2))
+                .andExpect(jsonPath("$.data[*].title", hasItems("The Great Gatsby", "Great Expectations")));
+        }
+
+        @Test
+        void returnsBooksByIsbn() throws Exception {
+            String book1 = """
+                    { "title": "The Great Gatsby", "author": "F. Scott Fitzgerald", "isbn": "978-0743273565" }
+                    """;
+            String book2 = """
+                    { "title": "Great Expectations", "author": "Charles Dickens", "isbn": "978-0141439563" }
+                    """;
+            String book3 = """
+                    { "title": "Brave New World", "author": "Aldous Huxley", "isbn": "978-0060850524" }
+                    """;
+
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book1))
+                .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book2))
+                .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book3))
+                .andExpect(status().isCreated());
+
+            mockMvc.perform(get("/api/v2/books?isbn=978-0141439563"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.version").value(2))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(1))
+                .andExpect(jsonPath("$.data[0].title").value("Great Expectations"))
+                .andExpect(jsonPath("$.data[0].isbn").value("978-0141439563"));
+        }
+
+        @Test
+        void returnsEmptyListWhenNoBooksMatch() throws Exception {
+            String book1 = """
+                    { "title": "The Great Gatsby", "author": "F. Scott Fitzgerald" }
+                    """;
+            String book2 = """
+                    { "title": "Brave New World", "author": "Aldous Huxley" }
+                    """;
+            String book3 = """
+                    { "title": "Moby Dick", "author": "Herman Melville" }
+                    """;
+
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book1))
+                .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book2))
+                .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book3))
+                .andExpect(status().isCreated());
+
+            mockMvc.perform(get("/api/v2/books?author=Nonexistent Author"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.version").value(2))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data").isEmpty());
+
+        }
+
+        @Test
+        void whitespaceQueryReturnsAllBooks() throws Exception {
+            String book1 = """
+                    { "title": "The Great Gatsby", "author": "F. Scott Fitzgerald" }
+                    """;
+            String book2 = """
+                    { "title": "Brave New World", "author": "Aldous Huxley" }
+                    """;
+            String book3 = """
+                    { "title": "Moby Dick", "author": "Herman Melville" }
+                    """;
+
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book1))
+                .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book2))
+                .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book3))
+                .andExpect(status().isCreated());
+
+            mockMvc.perform(get("/api/v2/books?author="))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.version").value(2))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(3))
+                .andExpect(
+                            jsonPath("$.data[*].title", hasItems("The Great Gatsby", "Brave New World", "Moby Dick")));
+        }
+
+        @Test
+        void multipleQueryParametersReturnsBooksMatchingAllCriteria() throws Exception {
+            String book1 = """
+                    { "title": "The Great Gatsby", "author": "F. Scott Fitzgerald", "isbn": "978-0743273565" }
+                    """;
+            String book2 = """
+                    { "title": "Great Expectations", "author": "Charles Dickens", "isbn": "978-0141439563" }
+                    """;
+            String book3 = """
+                    { "title": "Brave New World", "author": "Aldous Huxley", "isbn": "978-0060850524" }
+                    """;
+            String book4 = """
+                    { "title": "1984", "author": "George Orwell", "isbn": "978-0451524935" }
+                    """;
+            String book5 = """
+                    { "title": "Animal Farm", "author": "George Orwell", "isbn": "978-0451526342" }
+                    """;
+            String book6 = """
+                    { "title": "1984", "author": "Unknown", "isbn": "978-0451524935" }
+                    """;
+
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book1))
+                .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book2))
+                .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book3))
+                .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book4))
+                .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book5))
+                .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book6))
+                .andExpect(status().isCreated());
+
+            mockMvc.perform(get("/api/v2/books?author=George Orwell&title=1984"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.version").value(2))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(1))
+                .andExpect(jsonPath("$.data[0].title").value("1984"))
+                .andExpect(jsonPath("$.data[0].author").value("George Orwell"))
+                .andExpect(jsonPath("$.data[0].isbn").value("978-0451524935"));
+        }
+    }
 }
