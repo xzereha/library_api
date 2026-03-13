@@ -325,7 +325,7 @@ public class BookV2APIIntegrationTest {
         }
 
         @Test
-        void emptyQueryReturnsAllBooks() throws Exception {
+        void whitespaceQueryReturnsAllBooks() throws Exception {
             String book1 = """
                     { "title": "The Great Gatsby", "author": "F. Scott Fitzgerald" }
                     """;
@@ -350,6 +350,50 @@ public class BookV2APIIntegrationTest {
                     .andExpect(jsonPath("$.data.length()").value(3))
                     .andExpect(
                             jsonPath("$.data[*].title", hasItems("The Great Gatsby", "Brave New World", "Moby Dick")));
+        }
+
+        @Test
+        void multipleQueryParametersReturnsBooksMatchingAllCriteria() throws Exception {
+            String book1 = """
+                    { "title": "The Great Gatsby", "author": "F. Scott Fitzgerald", "isbn": "978-0743273565" }
+                    """;
+            String book2 = """
+                    { "title": "Great Expectations", "author": "Charles Dickens", "isbn": "978-0141439563" }
+                    """;
+            String book3 = """
+                    { "title": "Brave New World", "author": "Aldous Huxley", "isbn": "978-0060850524" }
+                    """;
+            String book4 = """
+                    { "title": "1984", "author": "George Orwell", "isbn": "978-0451524935" }
+                    """;
+            String book5 = """
+                    { "title": "Animal Farm", "author": "George Orwell", "isbn": "978-0451526342" }
+                    """;
+            String book6 = """
+                    { "title": "1984", "author": "Unknown", "isbn": "978-0451524935" }
+                    """;
+
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book1))
+                    .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book2))
+                    .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book3))
+                    .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book4))
+                    .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book5))
+                    .andExpect(status().isCreated());
+            mockMvc.perform(post("/api/v2/books").contentType(MediaType.APPLICATION_JSON).content(book6))
+                    .andExpect(status().isCreated());
+
+            mockMvc.perform(get("/api/v2/books?author=George Orwell&title=1984"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.version").value(2))
+                    .andExpect(jsonPath("$.data").isArray())
+                    .andExpect(jsonPath("$.data.length()").value(1))
+                    .andExpect(jsonPath("$.data[0].title").value("1984"))
+                    .andExpect(jsonPath("$.data[0].author").value("George Orwell"))
+                    .andExpect(jsonPath("$.data[0].isbn").value("978-0451524935"));
         }
     }
 }
