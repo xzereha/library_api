@@ -1,5 +1,7 @@
 package com.example.libraryapi.model;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +19,7 @@ public class Book {
     private String author;
     private String isbn;
     private Integer publishedYear;
+    @ColumnDefault("false")
     private boolean available = false;
 
     public Book() {
