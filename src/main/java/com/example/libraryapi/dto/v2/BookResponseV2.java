@@ -43,7 +43,7 @@ public record BookResponseV2(
         return new BookResponseV2(
                 book.getId(),
                 book.getTitle(),
-                book.getAuthor(),
+                book.getAuthor().getName(),
                 book.getIsbn(),
                 book.getPublishedYear(),
                 book.isAvailable());

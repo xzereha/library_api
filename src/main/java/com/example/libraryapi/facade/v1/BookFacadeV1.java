@@ -21,21 +21,22 @@ public class BookFacadeV1 {
                 bookRequest.author(),
                 bookRequest.isbn(),
                 bookRequest.publishedYear());
-        return new BookResponseV1(book.getId(), book.getTitle(), book.getAuthor(), book.getIsbn(),
+        return new BookResponseV1(book.getId(), book.getTitle(), book.getAuthor().getName(), book.getIsbn(),
                 book.getPublishedYear());
     }
 
     public List<BookResponseV1> getAllBooks() {
         var books = bookService.getAllBooks();
         return books.stream()
-                .map(book -> new BookResponseV1(book.getId(), book.getTitle(), book.getAuthor(), book.getIsbn(),
+                .map(book -> new BookResponseV1(book.getId(), book.getTitle(), book.getAuthor().getName(),
+                        book.getIsbn(),
                         book.getPublishedYear()))
                 .toList();
     }
 
     public BookResponseV1 getBookById(Long id) {
         var book = bookService.getBookById(id);
-        return new BookResponseV1(book.getId(), book.getTitle(), book.getAuthor(), book.getIsbn(),
+        return new BookResponseV1(book.getId(), book.getTitle(), book.getAuthor().getName(), book.getIsbn(),
                 book.getPublishedYear());
     }
 }
