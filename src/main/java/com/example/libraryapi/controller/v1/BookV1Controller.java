@@ -1,4 +1,4 @@
-package com.example.libraryapi.controller;
+package com.example.libraryapi.controller.v1;
 
 import java.net.URI;
 import java.util.List;
