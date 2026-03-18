@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,8 +50,11 @@ public class AuthorV2Controller {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseWrapper<AuthorResponseV2>> getAuthorById() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public ResponseEntity<ResponseWrapper<AuthorResponseV2>> getAuthorById(@PathVariable final Long id) {
+        var author = authorService.getAuthorById(id);
+        var dto = new AuthorResponseV2(author.getId(), author.getName());
+        var response = new ResponseWrapper<>(dto, 2);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/{id}/books", produces = MediaType.APPLICATION_JSON_VALUE)

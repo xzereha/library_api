@@ -18,6 +18,11 @@ import jakarta.servlet.http.HttpServletRequest;
 public class GlobalExceptionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    @ExceptionHandler(AuthorNotFoundException.class)
+    public ProblemDetail handleAuthorNotFoundException(AuthorNotFoundException ex, HttpServletRequest request) {
+        return buildProblem(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    }
+
     @ExceptionHandler(BookNotFoundException.class)
     public ProblemDetail handleBookNotFoundException(BookNotFoundException ex, HttpServletRequest request) {
         return buildProblem(HttpStatus.NOT_FOUND, ex.getMessage(), request);

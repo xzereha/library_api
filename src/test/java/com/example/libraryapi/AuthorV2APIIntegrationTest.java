@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
         ALTER TABLE book ALTER COLUMN id RESTART WITH 1;
         DELETE FROM author;
         ALTER TABLE author ALTER COLUMN id RESTART WITH 1;
-        """)
+        """, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class AuthorV2APIIntegrationTest {
@@ -68,11 +68,13 @@ public class AuthorV2APIIntegrationTest {
     @DisplayName("GET /api/v2/authors")
     class GetAuthorsTests {
         @Sql(statements = """
-                INSERT INTO author (id, name) VALUES
-                (1, 'George Orwell'),
-                (2, 'Aldous Huxley'),
-                (3, 'J.R.R. Tolkien');
-                    """)
+            DELETE FROM author;
+            ALTER TABLE author ALTER COLUMN id RESTART WITH 1;
+            INSERT INTO author (name) VALUES
+            ('George Orwell'),
+            ('Aldous Huxley'),
+            ('J.R.R. Tolkien');
+                    """, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         @Test
         @DisplayName("should return a list of authors")
         void shouldReturnAllAuthors() throws Exception {
@@ -82,7 +84,8 @@ public class AuthorV2APIIntegrationTest {
                     .andExpect(jsonPath("$.version").value(2))
                     .andExpect(jsonPath("$.data").isArray())
                     .andExpect(jsonPath("$.data.length()").value(3))
-                    .andExpect(jsonPath("$.data[*].name", hasItems("George Orwell", "Aldous Huxley", "J.R.R. Tolkien")));
+                    .andExpect(
+                            jsonPath("$.data[*].name", hasItems("George Orwell", "Aldous Huxley", "J.R.R. Tolkien")));
         }
 
         @Test
@@ -93,6 +96,36 @@ public class AuthorV2APIIntegrationTest {
                     .andExpect(jsonPath("$.version").value(2))
                     .andExpect(jsonPath("$.data").isArray())
                     .andExpect(jsonPath("$.data").isEmpty());
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /api/v2/authors/{id}")
+    class GetAuthorByIdTests {
+        @Sql(statements = """
+                DELETE FROM author;
+                ALTER TABLE author ALTER COLUMN id RESTART WITH 1;
+                INSERT INTO author (id, name) VALUES
+                (1, 'George Orwell'),
+                (2, 'Aldous Huxley');
+                    """, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+        @Test
+        @DisplayName("should return author details for a valid ID")
+        void shouldReturnAuthorById() throws Exception {
+            mockMvc.perform(get("/api/v2/authors/1")
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.version").value(2))
+                    .andExpect(jsonPath("$.data.id").value(1))
+                    .andExpect(jsonPath("$.data.name").value("George Orwell"));
+        }
+
+        @Test
+        @DisplayName("should return 404 Not Found for non-existent ID")
+        void shouldReturnNotFoundForNonExistentId() throws Exception {
+            mockMvc.perform(get("/api/v2/authors/999")
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNotFound());
         }
     }
 }
