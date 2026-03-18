@@ -24,7 +24,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @Sql(statements = """
         DELETE FROM book;
-        ALTER TABLE book ALTER COLUMN id RESTART WITH 1
+        ALTER TABLE book ALTER COLUMN id RESTART WITH 1;
+        DELETE FROM author;
+        ALTER TABLE author ALTER COLUMN id RESTART WITH 1;
             """, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class BookV1APIIntegrationTest {
 
@@ -47,13 +49,13 @@ public class BookV1APIIntegrationTest {
             mockMvc.perform(post("/api/v1/books")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(bookJson))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", matchesPattern("/api/v1/books/\\d+")))
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.title").value("The Great Gatsby"))
-                .andExpect(jsonPath("$.author").value("F. Scott Fitzgerald"))
-                .andExpect(jsonPath("$.isbn").value("978-0743273565"))
-                .andExpect(jsonPath("$.publishedYear").value(1925));
+                    .andExpect(status().isCreated())
+                    .andExpect(header().string("Location", matchesPattern("/api/v1/books/\\d+")))
+                    .andExpect(jsonPath("$.id").exists())
+                    .andExpect(jsonPath("$.title").value("The Great Gatsby"))
+                    .andExpect(jsonPath("$.author").value("F. Scott Fitzgerald"))
+                    .andExpect(jsonPath("$.isbn").value("978-0743273565"))
+                    .andExpect(jsonPath("$.publishedYear").value(1925));
         }
 
         @Test
@@ -68,12 +70,12 @@ public class BookV1APIIntegrationTest {
             mockMvc.perform(post("/api/v1/books")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(bookJson))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.title").value("Moby Dick"))
-                .andExpect(jsonPath("$.author").value("Herman Melville"))
-                .andExpect(jsonPath("$.isbn").value(nullValue()))
-                .andExpect(jsonPath("$.publishedYear").value(nullValue()));
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.id").exists())
+                    .andExpect(jsonPath("$.title").value("Moby Dick"))
+                    .andExpect(jsonPath("$.author").value("Herman Melville"))
+                    .andExpect(jsonPath("$.isbn").value(nullValue()))
+                    .andExpect(jsonPath("$.publishedYear").value(nullValue()));
         }
 
         @Test
@@ -88,11 +90,11 @@ public class BookV1APIIntegrationTest {
             mockMvc.perform(post("/api/v1/books")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(bookJson))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.error").value("Bad Request"))
-                .andExpect(jsonPath("$.message").value(containsString("missing or invalid")))
-                .andExpect(jsonPath("$.path").value("/api/v1/books"));
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value(400))
+                    .andExpect(jsonPath("$.error").value("Bad Request"))
+                    .andExpect(jsonPath("$.message").value(containsString("missing or invalid")))
+                    .andExpect(jsonPath("$.path").value("/api/v1/books"));
         }
 
         @Test
@@ -102,11 +104,11 @@ public class BookV1APIIntegrationTest {
             mockMvc.perform(post("/api/v1/books")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(invalidJson))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.error").value("Bad Request"))
-                .andExpect(jsonPath("$.message").value(containsString("parse")))
-                .andExpect(jsonPath("$.path").value("/api/v1/books"));
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value(400))
+                    .andExpect(jsonPath("$.error").value("Bad Request"))
+                    .andExpect(jsonPath("$.message").value(containsString("parse")))
+                    .andExpect(jsonPath("$.path").value("/api/v1/books"));
         }
     }
 
@@ -115,59 +117,63 @@ public class BookV1APIIntegrationTest {
         @Test
         void returnsEmptyListWhenNoBooksExist() throws Exception {
             mockMvc.perform(get("/api/v1/books"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$").isEmpty());
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$").isArray())
+                    .andExpect(jsonPath("$").isEmpty());
         }
 
         @Sql(statements = """
-                INSERT INTO book (title, author) VALUES
-                ('1984', 'George Orwell'),
-                ('Brave New World', 'Aldous Huxley');
+                INSERT INTO author (id, name) VALUES
+                (1L, 'George Orwell'),
+                (2L, 'Aldous Huxley');
+                INSERT INTO book (title, author_id) VALUES
+                ('1984', 1L),
+                ('Brave New World', 2L);
                 """, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         @Test
         void returnsAllBooksWhenDataExists() throws Exception {
             mockMvc.perform(get("/api/v1/books"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[*].title", hasItems("1984", "Brave New World")));
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$").isArray())
+                    .andExpect(jsonPath("$.length()").value(2))
+                    .andExpect(jsonPath("$[*].title", hasItems("1984", "Brave New World")));
         }
     }
 
     @Nested
     class GetBookById {
         @Sql(statements = """
-                INSERT INTO book (id, title, author, isbn, published_year) VALUES
-                (1, 'The Great Gatsby', 'F. Scott Fitzgerald', '978-0743273565', 1925);
+                INSERT INTO author (id, name) VALUES (1L, 'F. Scott Fitzgerald');
+                INSERT INTO book (id, title, author_id, isbn, published_year) VALUES
+                (1L, 'The Great Gatsby', 1L, '978-0743273565', 1925);
                 """, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         @Test
         void returnsBookWhenFound() throws Exception {
             mockMvc.perform(get("/api/v1/books/{id}", 1))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(is(1L), Long.class))
-                .andExpect(jsonPath("$.title").value("The Great Gatsby"))
-                .andExpect(jsonPath("$.author").value("F. Scott Fitzgerald"))
-                .andExpect(jsonPath("$.isbn").value("978-0743273565"))
-                .andExpect(jsonPath("$.publishedYear").value(1925));
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(is(1L), Long.class))
+                    .andExpect(jsonPath("$.title").value("The Great Gatsby"))
+                    .andExpect(jsonPath("$.author").value("F. Scott Fitzgerald"))
+                    .andExpect(jsonPath("$.isbn").value("978-0743273565"))
+                    .andExpect(jsonPath("$.publishedYear").value(1925));
         }
 
         @Test
         void returnsNotFoundWhenIdDoesNotExist() throws Exception {
             mockMvc.perform(get("/api/v1/books/999999"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.error").value("Not Found"))
-                .andExpect(jsonPath("$.message").value(containsString("not found")))
-                .andExpect(jsonPath("$.path").value("/api/v1/books/999999"));
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.status").value(404))
+                    .andExpect(jsonPath("$.error").value("Not Found"))
+                    .andExpect(jsonPath("$.message").value(containsString("not found")))
+                    .andExpect(jsonPath("$.path").value("/api/v1/books/999999"));
         }
 
         @Test
         void returnsBadRequestWhenIdIsNotNumeric() throws Exception {
             mockMvc.perform(get("/api/v1/books/abc"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.path").value("/api/v1/books/abc"));
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value(400))
+                    .andExpect(jsonPath("$.path").value("/api/v1/books/abc"));
         }
     }
 }
