@@ -36,8 +36,14 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book createBook(@NotBlank String title, @NotBlank String author, String isbn, Integer publishedYear) {
-        var authorEntity = authorRepository.findByName(author);
-        // TODO: handle case when author is not found
+        Author authorEntity;
+        try {
+            authorEntity = authorRepository.findByName(author);
+        } catch (Exception e) {
+            authorEntity = new Author();
+            authorEntity.setName(author);
+            authorEntity = authorRepository.save(authorEntity);
+        }
         return createBook(title, authorEntity, isbn, publishedYear);
     }
 
