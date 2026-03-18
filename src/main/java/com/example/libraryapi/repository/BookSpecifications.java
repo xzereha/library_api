@@ -34,9 +34,12 @@ public final class BookSpecifications {
     }
 
     public static Specification<Book> authorContains(String author) {
-        return (root, query, cb) -> cb.like(
-                cb.lower(root.get("author")),
-                "%" + author.toLowerCase(Locale.ROOT) + "%");
+        return (root, query, cb) -> {
+            var authorJoin = root.join("author");
+            return cb.like(
+                    cb.lower(authorJoin.get("name")),
+                    "%" + author.toLowerCase(Locale.ROOT) + "%");
+        };
     }
 
     public static Specification<Book> titleContains(String title) {
@@ -53,7 +56,7 @@ public final class BookSpecifications {
      * Helper method to normalize string values by trimming and converting empty strings to Optional.empty()
      *
      * @param value
-     *            the string value to normalize
+     *              the string value to normalize
      * @return an Optional containing the normalized string, or Optional.empty() if the string is null or empty
      */
     private static Optional<String> normalize(String value) {
