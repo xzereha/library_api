@@ -40,7 +40,12 @@ public class AuthorV2Controller {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseWrapper<List<AuthorResponseV2>>> getAuthors() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        var authors = authorService.getAllAuthors();
+        var dtos = authors.stream()
+                .map(author -> new AuthorResponseV2(author.getId(), author.getName()))
+                .toList();
+        var response = new ResponseWrapper<>(dtos, 2);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

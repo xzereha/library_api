@@ -1,5 +1,7 @@
 package com.example.libraryapi.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.libraryapi.model.Author;
@@ -17,5 +19,9 @@ public class AuthorService {
         var author = new Author();
         author.setName(name);
         return authorRepository.save(author);
+    }
+
+    public List<Author> getAllAuthors() {
+        return authorRepository.findAll();
     }
 }
