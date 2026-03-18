@@ -110,6 +110,28 @@ public class BookV1APIIntegrationTest {
                     .andExpect(jsonPath("$.message").value(containsString("parse")))
                     .andExpect(jsonPath("$.path").value("/api/v1/books"));
         }
+
+        @Sql(
+                statements = """
+                        INSERT INTO author (name) VALUES ('George Orwell');
+                        """,
+                executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+        @Test
+        void withExistingAuthor() throws Exception {
+            String secondBookJson = """
+                    {
+                        "title": "1984",
+                        "author": "George Orwell"
+                    }
+                    """;
+
+            mockMvc.perform(post("/api/v1/books")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(secondBookJson))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.author").value("George Orwell"));
+        }
+
     }
 
     @Nested
