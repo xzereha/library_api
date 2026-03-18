@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.libraryapi.exception.AuthorNotFoundException;
 import com.example.libraryapi.model.Author;
+import com.example.libraryapi.model.Book;
 import com.example.libraryapi.repository.AuthorRepository;
 
 import jakarta.annotation.Nonnull;
@@ -35,5 +36,11 @@ public class AuthorService {
     public Author getAuthorById(@Nonnull Long id) throws AuthorNotFoundException {
         return authorRepository.findById(id)
                 .orElseThrow(() -> new AuthorNotFoundException(id));
+    }
+
+    @Nonnull
+    public List<Book> getBooksByAuthorId(@Nonnull Long authorId) throws AuthorNotFoundException {
+        var author = getAuthorById(authorId);
+        return author.getBooks();
     }
 }

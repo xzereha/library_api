@@ -58,7 +58,12 @@ public class AuthorV2Controller {
     }
 
     @GetMapping(value = "/{id}/books", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseWrapper<List<BookResponseV2>>> books() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public ResponseEntity<ResponseWrapper<List<BookResponseV2>>> getBooksByAuthorId(@PathVariable final Long id) {
+        var books = authorService.getBooksByAuthorId(id);
+        var dtos = books.stream()
+                .map(BookResponseV2::fromBook)
+                .toList();
+        var response = new ResponseWrapper<>(dtos, 2);
+        return ResponseEntity.ok(response);
     }
 }
