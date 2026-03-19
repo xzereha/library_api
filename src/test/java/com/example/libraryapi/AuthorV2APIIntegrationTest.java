@@ -43,10 +43,10 @@ public class AuthorV2APIIntegrationTest {
             mockMvc.perform(post("/api/v2/authors")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody))
-                    .andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.version").value(2))
-                    .andExpect(jsonPath("$.data.id").exists())
-                    .andExpect(jsonPath("$.data.name").value("J.R.R. Tolkien"));
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.version").value(2))
+                .andExpect(jsonPath("$.data.id").exists())
+                .andExpect(jsonPath("$.data.name").value("J.R.R. Tolkien"));
         }
 
         @Test
@@ -60,7 +60,7 @@ public class AuthorV2APIIntegrationTest {
             mockMvc.perform(post("/api/v2/authors")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody))
-                    .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest());
         }
     }
 
@@ -80,11 +80,11 @@ public class AuthorV2APIIntegrationTest {
         void shouldReturnAllAuthors() throws Exception {
             mockMvc.perform(get("/api/v2/authors")
                     .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.version").value(2))
-                    .andExpect(jsonPath("$.data").isArray())
-                    .andExpect(jsonPath("$.data.length()").value(3))
-                    .andExpect(
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.version").value(2))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(3))
+                .andExpect(
                             jsonPath("$.data[*].name", hasItems("George Orwell", "Aldous Huxley", "J.R.R. Tolkien")));
         }
 
@@ -92,10 +92,10 @@ public class AuthorV2APIIntegrationTest {
         void shouldReturnEmptyListWhenNoAuthors() throws Exception {
             mockMvc.perform(get("/api/v2/authors")
                     .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.version").value(2))
-                    .andExpect(jsonPath("$.data").isArray())
-                    .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.version").value(2))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data").isEmpty());
         }
     }
 
@@ -114,10 +114,10 @@ public class AuthorV2APIIntegrationTest {
         void shouldReturnAuthorById() throws Exception {
             mockMvc.perform(get("/api/v2/authors/1")
                     .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.version").value(2))
-                    .andExpect(jsonPath("$.data.id").value(1))
-                    .andExpect(jsonPath("$.data.name").value("George Orwell"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.version").value(2))
+                .andExpect(jsonPath("$.data.id").value(1))
+                .andExpect(jsonPath("$.data.name").value("George Orwell"));
         }
 
         @Test
@@ -125,7 +125,7 @@ public class AuthorV2APIIntegrationTest {
         void shouldReturnNotFoundForNonExistentId() throws Exception {
             mockMvc.perform(get("/api/v2/authors/999")
                     .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound());
         }
     }
 
@@ -149,11 +149,11 @@ public class AuthorV2APIIntegrationTest {
         void shouldReturnBooksByAuthorId() throws Exception {
             mockMvc.perform(get("/api/v2/authors/1/books")
                     .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.version").value(2))
-                    .andExpect(jsonPath("$.data").isArray())
-                    .andExpect(jsonPath("$.data.length()").value(2))
-                    .andExpect(jsonPath("$.data[*].title", hasItems("The Hobbit", "The Lord of the Rings")));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.version").value(2))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(2))
+                .andExpect(jsonPath("$.data[*].title", hasItems("The Hobbit", "The Lord of the Rings")));
         }
 
         @Test
@@ -161,10 +161,10 @@ public class AuthorV2APIIntegrationTest {
         void shouldReturnEmptyListForAuthorWithNoBooks() throws Exception {
             mockMvc.perform(get("/api/v2/authors/2/books")
                     .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.version").value(2))
-                    .andExpect(jsonPath("$.data").isArray())
-                    .andExpect(jsonPath("$.data").isEmpty());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.version").value(2))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data").isEmpty());
         }
 
         @Test
@@ -172,7 +172,7 @@ public class AuthorV2APIIntegrationTest {
         void shouldReturnNotFoundForNonExistentAuthorId() throws Exception {
             mockMvc.perform(get("/api/v2/authors/999/books")
                     .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound());
         }
     }
 }

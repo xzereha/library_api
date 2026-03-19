@@ -56,7 +56,7 @@ public final class BookSpecifications {
      * Helper method to normalize string values by trimming and converting empty strings to Optional.empty()
      *
      * @param value
-     *              the string value to normalize
+     *            the string value to normalize
      * @return an Optional containing the normalized string, or Optional.empty() if the string is null or empty
      */
     private static Optional<String> normalize(String value) {
