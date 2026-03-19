@@ -1,29 +1,31 @@
 package com.example.libraryapi.model;
 
-import org.hibernate.annotations.ColumnDefault;
-
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import org.hibernate.annotations.ColumnDefault;
 
+/** Entity representing a book in the library system. */
 @Entity
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Nonnull
-    private String title;
-    @ManyToOne
-    private Author author;
+
+    @Nonnull private String title;
+    @ManyToOne private Author author;
     private String isbn;
     private Integer publishedYear;
+
     @ColumnDefault("false")
     private boolean available = false;
 
+    /** Default constructor for JPA. Should not be used directly. */
     public Book() {
+        // Default constructor for JPA
     }
 
     public Long getId() {
