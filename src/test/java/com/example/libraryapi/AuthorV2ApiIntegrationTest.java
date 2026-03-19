@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+/** Integration tests for the v2 author endpoints. */
 @Sql(
         statements =
                 """
@@ -27,7 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AuthorV2APIIntegrationTest {
+public class AuthorV2ApiIntegrationTest {
     @Autowired private MockMvc mockMvc;
 
     @Nested

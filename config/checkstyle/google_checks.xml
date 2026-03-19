@@ -348,6 +348,8 @@
       <property name="separated" value="true" />
       <!-- Include common top-level groups (add 'io' too) to match formatter behavior -->
       <property name="groups" value="android,com,io,jakarta,org,net,junit,java,javax" />
+      <!-- Place static imports above other imports (AOSP expectation) -->
+      <property name="option" value="top" />
     </module>
     <module name="MethodParamPad">
       <property name="tokens"

@@ -21,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+/** Integration tests for the v2 book endpoints. */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Sql(
@@ -32,11 +33,11 @@ import org.springframework.test.web.servlet.MockMvc;
                 ALTER TABLE author ALTER COLUMN id RESTART WITH 1;
                 """,
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class BookV2APIIntegrationTest {
+public class BookV2ApiIntegrationTest {
     @Autowired private MockMvc mockMvc;
 
     @Nested
-    public class PostBooks {
+    class PostBooks {
 
         @Test
         void withAllFields() throws Exception {
