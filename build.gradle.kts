@@ -1,7 +1,6 @@
 plugins {
 	java
 	checkstyle
-	id("com.diffplug.spotless") version "8.3.0"
 	id("org.springframework.boot") version "4.0.3"
 	id("io.spring.dependency-management") version "1.1.7"
 }
@@ -20,6 +19,11 @@ repositories {
 	mavenCentral()
 }
 
+checkstyle {
+	toolVersion = "13.3.0"
+	configFile = file("config/checkstyle/google_checks.xml")
+}
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-h2console")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -32,28 +36,6 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.junit.jupiter:junit-jupiter-api")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-}
-
-spotless {
-	java {
-		target("src/*/java/**/*.java")
-		eclipse().configFile("config/formatter/eclipse-java-style.xml")
-		replaceRegex(
-			"scopeIndentation",
-			"(?m)^ {20}(\\.and(?:Expect|Do|Return)\\()",
-			"                $1"
-		)
-		trimTrailingWhitespace()
-		endWithNewline()
-	}
-}
-
-tasks.register("format") {
-	dependsOn("spotlessApply")
-}
-
-tasks.named("check") {
-	dependsOn("spotlessCheck")
 }
 
 tasks.withType<Test> {
