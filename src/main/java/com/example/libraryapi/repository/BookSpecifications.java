@@ -34,9 +34,12 @@ public final class BookSpecifications {
     }
 
     public static Specification<Book> authorContains(String author) {
-        return (root, query, cb) -> cb.like(
-                cb.lower(root.get("author")),
-                "%" + author.toLowerCase(Locale.ROOT) + "%");
+        return (root, query, cb) -> {
+            var authorJoin = root.join("author");
+            return cb.like(
+                    cb.lower(authorJoin.get("name")),
+                    "%" + author.toLowerCase(Locale.ROOT) + "%");
+        };
     }
 
     public static Specification<Book> titleContains(String title) {

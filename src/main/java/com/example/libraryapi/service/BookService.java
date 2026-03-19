@@ -3,12 +3,20 @@ package com.example.libraryapi.service;
 import java.util.List;
 
 import com.example.libraryapi.exception.BookNotFoundException;
+import com.example.libraryapi.model.Author;
 import com.example.libraryapi.model.Book;
 
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotBlank;
 
 public interface BookService {
+    @Nonnull
+    Book createBook(
+            @Nonnull @NotBlank String title,
+            @Nonnull Author author,
+            String isbn,
+            Integer publishedYear);
+
     @Nonnull
     Book createBook(
             @Nonnull @NotBlank String title,

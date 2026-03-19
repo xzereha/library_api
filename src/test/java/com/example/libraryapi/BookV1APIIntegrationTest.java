@@ -24,7 +24,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @Sql(statements = """
         DELETE FROM book;
-        ALTER TABLE book ALTER COLUMN id RESTART WITH 1
+        ALTER TABLE book ALTER COLUMN id RESTART WITH 1;
+        DELETE FROM author;
+        ALTER TABLE author ALTER COLUMN id RESTART WITH 1;
             """, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class BookV1APIIntegrationTest {
 
@@ -108,6 +110,28 @@ public class BookV1APIIntegrationTest {
                 .andExpect(jsonPath("$.message").value(containsString("parse")))
                 .andExpect(jsonPath("$.path").value("/api/v1/books"));
         }
+
+        @Sql(
+                statements = """
+                        INSERT INTO author (name) VALUES ('George Orwell');
+                        """,
+                executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+        @Test
+        void withExistingAuthor() throws Exception {
+            String secondBookJson = """
+                    {
+                        "title": "1984",
+                        "author": "George Orwell"
+                    }
+                    """;
+
+            mockMvc.perform(post("/api/v1/books")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(secondBookJson))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.author").value("George Orwell"));
+        }
+
     }
 
     @Nested
@@ -121,9 +145,12 @@ public class BookV1APIIntegrationTest {
         }
 
         @Sql(statements = """
-                INSERT INTO book (title, author) VALUES
-                ('1984', 'George Orwell'),
-                ('Brave New World', 'Aldous Huxley');
+                INSERT INTO author (id, name) VALUES
+                (1L, 'George Orwell'),
+                (2L, 'Aldous Huxley');
+                INSERT INTO book (title, author_id) VALUES
+                ('1984', 1L),
+                ('Brave New World', 2L);
                 """, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         @Test
         void returnsAllBooksWhenDataExists() throws Exception {
@@ -138,8 +165,9 @@ public class BookV1APIIntegrationTest {
     @Nested
     class GetBookById {
         @Sql(statements = """
-                INSERT INTO book (id, title, author, isbn, published_year) VALUES
-                (1, 'The Great Gatsby', 'F. Scott Fitzgerald', '978-0743273565', 1925);
+                INSERT INTO author (id, name) VALUES (1L, 'F. Scott Fitzgerald');
+                INSERT INTO book (id, title, author_id, isbn, published_year) VALUES
+                (1L, 'The Great Gatsby', 1L, '978-0743273565', 1925);
                 """, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         @Test
         void returnsBookWhenFound() throws Exception {

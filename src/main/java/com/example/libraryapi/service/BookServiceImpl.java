@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.libraryapi.exception.BookNotFoundException;
+import com.example.libraryapi.model.Author;
 import com.example.libraryapi.model.Book;
+import com.example.libraryapi.repository.AuthorRepository;
 import com.example.libraryapi.repository.BookRepository;
 import com.example.libraryapi.repository.BookSpecifications;
 
@@ -14,13 +16,15 @@ import jakarta.validation.constraints.NotBlank;
 @Service
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
 
-    public BookServiceImpl(BookRepository bookRepository) {
+    public BookServiceImpl(BookRepository bookRepository, AuthorRepository authorRepository) {
         this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
     }
 
     @Override
-    public Book createBook(@NotBlank String title, @NotBlank String author, String isbn, Integer publishedYear) {
+    public Book createBook(@NotBlank String title, @NotBlank Author author, String isbn, Integer publishedYear) {
         var book = new Book();
         book.setTitle(title);
         book.setAuthor(author);
@@ -28,6 +32,18 @@ public class BookServiceImpl implements BookService {
         book.setPublishedYear(publishedYear);
 
         return bookRepository.save(book);
+    }
+
+    @Override
+    public Book createBook(@NotBlank String title, @NotBlank String author, String isbn, Integer publishedYear) {
+        Author authorEntity = authorRepository.findByName(author);
+        // TODO: This is a hacky solution to keep V1 working
+        if (authorEntity == null) {
+            authorEntity = new Author();
+            authorEntity.setName(author);
+            authorEntity = authorRepository.save(authorEntity);
+        }
+        return createBook(title, authorEntity, isbn, publishedYear);
     }
 
     @Override
@@ -45,4 +61,5 @@ public class BookServiceImpl implements BookService {
         var spec = BookSpecifications.fromQuery(query);
         return bookRepository.findAll(spec);
     }
+
 }

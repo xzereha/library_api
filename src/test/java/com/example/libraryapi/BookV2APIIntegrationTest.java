@@ -25,15 +25,16 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @Sql(statements = """
         DELETE FROM book;
-        ALTER TABLE book ALTER COLUMN id RESTART WITH 1
+        ALTER TABLE book ALTER COLUMN id RESTART WITH 1;
+        DELETE FROM author;
+        ALTER TABLE author ALTER COLUMN id RESTART WITH 1;
             """, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class BookV2APIIntegrationTest {
-
     @Autowired
     private MockMvc mockMvc;
 
     @Nested
-    class PostBooks {
+    public class PostBooks {
 
         @Test
         void withAllFields() throws Exception {
@@ -129,9 +130,12 @@ public class BookV2APIIntegrationTest {
         }
 
         @Sql(statements = """
-                INSERT INTO book (title, author) VALUES
-                ('1984', 'George Orwell'),
-                ('Brave New World', 'Aldous Huxley');
+                INSERT INTO author (id, name) VALUES
+                (1, 'George Orwell'),
+                (2, 'Aldous Huxley');
+                INSERT INTO book (title, author_id) VALUES
+                ('1984', 1),
+                ('Brave New World', 2);
                  """, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         @Test
         void returnsAllBooksWhenDataExists() throws Exception {
@@ -149,8 +153,10 @@ public class BookV2APIIntegrationTest {
     class GetBookById {
 
         @Sql(statements = """
-                INSERT INTO book (id, title, author, isbn, published_year, available) VALUES
-                (1, 'The Great Gatsby', 'F. Scott Fitzgerald', '978-0743273565', 1925, false);
+                INSERT INTO author (id, name) VALUES
+                (1, 'F. Scott Fitzgerald');
+                INSERT INTO book (id, title, author_id, isbn, published_year, available) VALUES
+                (1, 'The Great Gatsby', 1, '978-0743273565', 1925, false);
                  """, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         @Test
         void returnsBookWhenFound() throws Exception {
@@ -188,13 +194,21 @@ public class BookV2APIIntegrationTest {
     @Sql(statements = """
             DELETE FROM book;
             ALTER TABLE book ALTER COLUMN id RESTART WITH 1;
-            INSERT INTO book (title, author, isbn, published_year) VALUES
-            ('1984', 'George Orwell', '978-0451524935', 1949),
-            ('Animal Farm', 'George Orwell', '978-0451526342', 1945),
-            ('Moby Dick', 'Herman Melville', '978-1503280786', 1851),
-            ('The Great Gatsby', 'F. Scott Fitzgerald', '978-0743273565', 1925),
-            ('Great Expectations', 'Charles Dickens', '978-0141439563', 1861),
-            ('Brave New World', 'Aldous Huxley', '978-0060850524', 1932);
+            DELETE FROM author;
+            ALTER TABLE author ALTER COLUMN id RESTART WITH 1;
+            INSERT INTO author (id, name) VALUES
+            (1, 'George Orwell'),
+            (2, 'Aldous Huxley'),
+            (3, 'Herman Melville'),
+            (4, 'F. Scott Fitzgerald'),
+            (5, 'Charles Dickens');
+            INSERT INTO book (title, author_id, isbn, published_year) VALUES
+            ('1984', 1, '978-0451524935', 1949),
+            ('Animal Farm', 1, '978-0451526342', 1945),
+            ('Moby Dick', 3, '978-1503280786', 1851),
+            ('The Great Gatsby', 4, '978-0743273565', 1925),
+            ('Great Expectations', 5, '978-0141439563', 1861),
+            ('Brave New World', 2, '978-0060850524', 1932);
             """, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Nested
     class FilteredGet {
