@@ -1,18 +1,22 @@
 package com.example.libraryapi.repository;
 
-import java.util.List;
+import com.example.libraryapi.model.Book;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import com.example.libraryapi.model.Book;
+import java.util.List;
 
+/** Repository interface for managing Book entities. */
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
 
-    // TODO: Names are not unique so this should return a list,
-    // but for simplicity we assume that they are unique for now
-    List<Book> findByAuthor(String string);
-
+    /**
+     * Finds books by the author's name.
+     *
+     * @param authorName the name of the author
+     * @return a list of books by the given author
+     */
+    List<Book> findByAuthorName(String authorName);
 }
