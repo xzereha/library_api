@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+
 import org.hibernate.annotations.ColumnDefault;
 
 /** Entity representing a book in the library system. */

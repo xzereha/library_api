@@ -5,9 +5,9 @@ import com.example.libraryapi.dto.v1.BookRequestV1;
 import com.example.libraryapi.dto.v2.BookResponseV2;
 import com.example.libraryapi.facade.v2.BookFacadeV2;
 import com.example.libraryapi.service.BookQuery;
+
 import jakarta.validation.Valid;
-import java.net.URI;
-import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
+import java.util.List;
 
 /**
  * REST controller for managing books in API version 2. This controller provides endpoints for

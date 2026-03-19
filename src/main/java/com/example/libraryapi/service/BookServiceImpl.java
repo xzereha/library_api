@@ -6,9 +6,12 @@ import com.example.libraryapi.model.Book;
 import com.example.libraryapi.repository.AuthorRepository;
 import com.example.libraryapi.repository.BookRepository;
 import com.example.libraryapi.repository.BookSpecifications;
+
 import jakarta.validation.constraints.NotBlank;
-import java.util.List;
+
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Service layer implementation for managing books. Provides methods to manipulate book data and

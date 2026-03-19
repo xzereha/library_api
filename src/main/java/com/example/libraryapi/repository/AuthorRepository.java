@@ -1,11 +1,10 @@
 package com.example.libraryapi.repository;
 
 import com.example.libraryapi.model.Author;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-/**
- * Repository interface for managing Author entities.
- */
+/** Repository interface for managing Author entities. */
 public interface AuthorRepository extends JpaRepository<Author, Long> {
     /**
      * Finds an author by their name.

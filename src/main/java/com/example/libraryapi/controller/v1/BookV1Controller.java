@@ -3,9 +3,9 @@ package com.example.libraryapi.controller.v1;
 import com.example.libraryapi.dto.v1.BookRequestV1;
 import com.example.libraryapi.dto.v1.BookResponseV1;
 import com.example.libraryapi.facade.v1.BookFacadeV1;
+
 import jakarta.validation.Valid;
-import java.net.URI;
-import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
+import java.util.List;
 
 /**
  * REST controller for managing books (version 1). Provides endpoints for creating and retrieving

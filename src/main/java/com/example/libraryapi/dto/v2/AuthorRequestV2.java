@@ -1,6 +1,7 @@
 package com.example.libraryapi.dto.v2;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import jakarta.validation.constraints.NotBlank;
 
 /** DTO for creating a new author (version 2). */

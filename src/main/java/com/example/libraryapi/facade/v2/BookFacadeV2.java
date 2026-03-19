@@ -4,8 +4,10 @@ import com.example.libraryapi.dto.v1.BookRequestV1;
 import com.example.libraryapi.dto.v2.BookResponseV2;
 import com.example.libraryapi.service.BookQuery;
 import com.example.libraryapi.service.BookService;
-import java.util.List;
+
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /** Facade for book-related operations (version 2). */
 @Service

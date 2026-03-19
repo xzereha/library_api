@@ -2,9 +2,11 @@ package com.example.libraryapi.repository;
 
 import com.example.libraryapi.model.Book;
 import com.example.libraryapi.service.BookQuery;
+
+import org.springframework.data.jpa.domain.Specification;
+
 import java.util.Locale;
 import java.util.Optional;
-import org.springframework.data.jpa.domain.Specification;
 
 /** Utility class for creating JPA Specifications for the Book entity. */
 public final class BookSpecifications {

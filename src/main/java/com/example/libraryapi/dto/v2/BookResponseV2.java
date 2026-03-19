@@ -1,7 +1,9 @@
 package com.example.libraryapi.dto.v2;
 
 import com.example.libraryapi.model.Book;
+
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
