@@ -20,6 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @Sql(
         statements =
                 """
+                DELETE FROM loan;
+                ALTER TABLE loan ALTER COLUMN id RESTART WITH 1;
                 DELETE FROM book;
                 ALTER TABLE book ALTER COLUMN id RESTART WITH 1;
                 DELETE FROM author;
