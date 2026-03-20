@@ -1,13 +1,13 @@
 package com.example.libraryapi.model;
 
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-
-import org.hibernate.annotations.ColumnDefault;
+import jakarta.persistence.OneToOne;
 
 /** Entity representing a book in the library system. */
 @Entity
@@ -21,8 +21,9 @@ public class Book {
     private String isbn;
     private Integer publishedYear;
 
-    @ColumnDefault("false")
-    private boolean available = false;
+    @Nullable
+    @OneToOne(mappedBy = "book")
+    private Loan currentLoan;
 
     /** Default constructor for JPA. Should not be used directly. */
     public Book() {
@@ -66,10 +67,14 @@ public class Book {
     }
 
     public boolean isAvailable() {
-        return available;
+        return currentLoan == null;
     }
 
-    public void setAvailable(boolean available) {
-        this.available = available;
+    public Loan getCurrentLoan() {
+        return currentLoan;
+    }
+
+    public void setCurrentLoan(Loan currentLoan) {
+        this.currentLoan = currentLoan;
     }
 }
