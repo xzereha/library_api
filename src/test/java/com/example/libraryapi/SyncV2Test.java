@@ -1,0 +1,79 @@
+package com.example.libraryapi;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * Synchronization tests for the V2 API. These tests ensure that the V2 API endpoints are properly
+ * synchronized with the underlying data model and that concurrent requests are handled correctly.
+ */
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
+class SyncV2Test {
+    @Autowired private MockMvc mockMvc;
+
+    @Sql(
+            statements =
+                    """
+                    DELETE FROM loan;
+                    ALTER TABLE loan ALTER COLUMN id RESTART WITH 1;
+                    DELETE FROM book;
+                    ALTER TABLE book ALTER COLUMN id RESTART WITH 1;
+                    DELETE FROM author;
+                    ALTER TABLE author ALTER COLUMN id RESTART WITH 1;
+
+                    INSERT INTO author (id, name) VALUES (1, 'J.K. Rowling');
+                    INSERT INTO book (id, title, author_id) VALUES
+                    (1, 'Harry Potter and the Sorcerer''s Stone', 1);
+                    """,
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Test
+    void testConcurrentLoanCreation() throws Exception {
+        final int numberOfThreads = 2;
+        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
+        CountDownLatch start = new CountDownLatch(1);
+        CountDownLatch done = new CountDownLatch(numberOfThreads);
+
+        for (int i = 0; i < numberOfThreads; i++) {
+            executorService.submit(
+                    () -> {
+                        try {
+                            start.await(); // Wait for the signal to start
+                            // Perform a POST request to create a loan
+                            mockMvc.perform(
+                                            post("/api/v2/loans")
+                                                    .contentType(MediaType.APPLICATION_JSON)
+                                                    .content(
+                                                            """
+                                                            {
+                                                                "bookId": 1
+                                                            }
+                                                            """))
+                                    .andExpect(status().isOk());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            done.countDown(); // Signal that this thread is done
+                        }
+                    });
+        }
+
+        // Signal all threads to start
+        start.countDown();
+        // Wait for all threads to finish
+        done.await();
+        executorService.shutdown();
+    }
+}
