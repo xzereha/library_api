@@ -63,7 +63,7 @@ public class BookV2ApiIntegrationTest {
                     .andExpect(jsonPath("$.data.author").value("F. Scott Fitzgerald"))
                     .andExpect(jsonPath("$.data.isbn").value("978-0743273565"))
                     .andExpect(jsonPath("$.data.publishedYear").value(1925))
-                    .andExpect(jsonPath("$.data.available").value(false));
+                    .andExpect(jsonPath("$.data.available").value(true));
         }
 
         @Test
@@ -87,7 +87,7 @@ public class BookV2ApiIntegrationTest {
                     .andExpect(jsonPath("$.data.author").value("Herman Melville"))
                     .andExpect(jsonPath("$.data.isbn").value(nullValue()))
                     .andExpect(jsonPath("$.data.publishedYear").value(nullValue()))
-                    .andExpect(jsonPath("$.data.available").value(false));
+                    .andExpect(jsonPath("$.data.available").value(true));
         }
 
         @Test
@@ -158,7 +158,7 @@ public class BookV2ApiIntegrationTest {
                     .andExpect(jsonPath("$.data").isArray())
                     .andExpect(jsonPath("$.data.length()").value(2))
                     .andExpect(jsonPath("$.data[*].title", hasItems("1984", "Brave New World")))
-                    .andExpect(jsonPath("$.data[*].available", everyItem(is(false))));
+                    .andExpect(jsonPath("$.data[*].available", everyItem(is(true))));
         }
     }
 
@@ -170,8 +170,8 @@ public class BookV2ApiIntegrationTest {
                         """
                         INSERT INTO author (id, name) VALUES
                         (1, 'F. Scott Fitzgerald');
-                        INSERT INTO book (id, title, author_id, isbn, published_year, available) VALUES
-                        (1, 'The Great Gatsby', 1, '978-0743273565', 1925, false);
+                        INSERT INTO book (id, title, author_id, isbn, published_year) VALUES
+                        (1, 'The Great Gatsby', 1, '978-0743273565', 1925);
                         """,
                 executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         @Test
@@ -185,7 +185,7 @@ public class BookV2ApiIntegrationTest {
                     .andExpect(jsonPath("$.data.author").value("F. Scott Fitzgerald"))
                     .andExpect(jsonPath("$.data.isbn").value("978-0743273565"))
                     .andExpect(jsonPath("$.data.publishedYear").value(1925))
-                    .andExpect(jsonPath("$.data.available").value(false));
+                    .andExpect(jsonPath("$.data.available").value(true));
         }
 
         @Test
