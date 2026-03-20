@@ -82,6 +82,29 @@ class LoanV2ApiIntegrationTest {
         }
 
         @Test
+        @DisplayName("should return 400 bad request when book is attempted to be loaned out twice")
+        void shouldReturnBadRequestWhenBookIsLoanedOutTwice() throws Exception {
+            String requestBody =
+                    """
+                    {
+                        "bookId": 1
+                        }
+                    """;
+
+            mockMvc.perform(
+                            post("/api/v2/loans")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(requestBody))
+                    .andExpect(status().isCreated());
+
+            mockMvc.perform(
+                            post("/api/v2/loans")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(requestBody))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
         @DisplayName("should return 404 Not Found when book is missing")
         void shouldReturnNotFoundWhenBookIsMissing() throws Exception {
             String requestBody =
