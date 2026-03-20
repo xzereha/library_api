@@ -49,6 +49,21 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles BookNotAvailableException and returns a 400 Bad Request response with error details.
+     * This exception is typically thrown when a client attempts to create a loan for a book that is
+     * not currently available (e.g., because it is already loaned out).
+     *
+     * @param ex The BookNotAvailableException that was thrown
+     * @param request The HttpServletRequest that resulted in the exception
+     * @return A ProblemDetail object containing error details to be returned in the response body
+     */
+    @ExceptionHandler(BookNotAvailableException.class)
+    public ProblemDetail handleBookNotAvailableException(
+            BookNotAvailableException ex, HttpServletRequest request) {
+        return buildProblem(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    }
+
+    /**
      * Handles MethodArgumentNotValidException and returns a 400 Bad Request response with error
      * details.
      *

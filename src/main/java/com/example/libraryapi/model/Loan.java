@@ -34,6 +34,24 @@ public class Loan {
         // Default constructor for JPA
     }
 
+    /**
+     * Constructor for creating a new Loan. This constructor is used to create a new loan for a
+     * book. It takes a Book object and a Date object representing the loan date. The return date is
+     * initialized to null, indicating that the book has not yet been returned.
+     *
+     * @param book the Book being loaned, must not be null
+     * @param loanDate the date the loan was created, must not be null
+     * @throws IllegalArgumentException if book or loanDate is null
+     */
+    public Loan(Book book, Date loanDate) {
+        if (book == null || loanDate == null) {
+            throw new IllegalArgumentException("Book and loanDate must not be null");
+        }
+
+        this.book = book;
+        this.loanDate = loanDate;
+    }
+
     public Long getId() {
         return id;
     }

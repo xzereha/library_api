@@ -1,5 +1,7 @@
 package com.example.libraryapi.dto.v2;
 
+import com.example.libraryapi.model.Loan;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.annotation.Nonnull;
@@ -46,4 +48,19 @@ public record LoanResponseV2(
                         example = "2023-01-15",
                         requiredMode = Schema.RequiredMode.NOT_REQUIRED,
                         nullable = true)
-                Date returnDate) {}
+                Date returnDate) {
+    /**
+     * Factory method to create a LoanResponseV2 from a Loan entity.
+     *
+     * @param loan The Loan entity to convert
+     * @return A LoanResponseV2 instance containing the loan details
+     */
+    public static LoanResponseV2 fromLoan(Loan loan) {
+        return new LoanResponseV2(
+                loan.getId(),
+                loan.getBook().getId(),
+                loan.getTitle(),
+                loan.getLoanDate(),
+                loan.getReturnDate());
+    }
+}

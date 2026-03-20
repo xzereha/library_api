@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,106 +36,118 @@ import org.springframework.test.web.servlet.MockMvc;
 class LoanV2ApiIntegrationTest {
     @Autowired private MockMvc mockMvc;
 
-    @Test
-    @DisplayName("should return 400 Bad Request when book ID is missing")
-    void shouldReturnBadRequestWhenBookIdIsMissing() throws Exception {
-        String requestBody =
-                """
-                {
-                }
-                """;
+    @Nested
+    @DisplayName("POST /api/v2/loans")
+    class CreateLoan {
 
-        mockMvc.perform(
-                        post("/api/v2/loans")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Sql(
-            statements =
+        @Test
+        @DisplayName("should return 400 Bad Request when book ID is missing")
+        void shouldReturnBadRequestWhenBookIdIsMissing() throws Exception {
+            String requestBody =
                     """
-                    INSERT INTO loan (id, book_id) VALUES (1, 1);
-                    """,
-            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Test
-    @DisplayName("should return 400 Bad Request when book is already loaned out")
-    void shouldReturnBadRequestWhenBookIsNotAvailable() throws Exception {
-        String requestBody =
-                """
-                {
-                    "bookId": 1
-                }
-                """;
+                    {
+                        }
+                    """;
 
-        mockMvc.perform(
-                        post("/api/v2/loans")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
-                .andExpect(status().isBadRequest());
-    }
+            mockMvc.perform(
+                            post("/api/v2/loans")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(requestBody))
+                    .andExpect(status().isBadRequest());
+        }
 
-    @Test
-    @DisplayName("should return 404 Not Found when book is missing")
-    void shouldReturnNotFoundWhenBookIsMissing() throws Exception {
-        String requestBody =
-                """
-                {
-                    "bookId": 999
-                }
-                """;
-
-        mockMvc.perform(
-                        post("/api/v2/loans")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("should create a new loan and return 201 Created when book is available")
-    void shouldCreateLoanWhenBookIsAvailable() throws Exception {
-        String requestBody =
-                """
-                {
-                    "bookId": 1
-                }
-                """;
-        mockMvc.perform(
-                        post("/api/v2/loans")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody))
-                .andExpect(status().isCreated());
-    }
-
-    @Test
-    @DisplayName("should retrieve all loans and return 200 OK")
-    void shouldRetrieveAllLoans() throws Exception {
-        mockMvc.perform(get("/api/v2/loans").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("should return an empty list of loans when there are no loans")
-    void shouldReturnEmptyListWhenNoLoans() throws Exception {
-        mockMvc.perform(get("/api/v2/loans").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").isEmpty());
-    }
-
-    @Sql(
-            statements =
+        @Sql(
+                statements =
+                        """
+                        DELETE FROM loan;
+                        ALTER TABLE loan ALTER COLUMN id RESTART WITH 1;
+                        INSERT INTO loan (id, book_id) VALUES (1, 1);
+                        """,
+                executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+        @Test
+        @DisplayName("should return 400 Bad Request when book is already loaned out")
+        void shouldReturnBadRequestWhenBookIsNotAvailable() throws Exception {
+            String requestBody =
                     """
-                    INSERT INTO loan (id, book_id) VALUES (1, 1);
-                    """,
-            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Test
-    @DisplayName("should return a list of loans when there are existing loans")
-    void shouldReturnListOfLoans() throws Exception {
-        mockMvc.perform(get("/api/v2/loans").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.data[0].id").value(1))
-                .andExpect(jsonPath("$.data[0].bookId").value(1));
+                    {
+                        "bookId": 1
+                        }
+                    """;
+
+            mockMvc.perform(
+                            post("/api/v2/loans")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(requestBody))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("should return 404 Not Found when book is missing")
+        void shouldReturnNotFoundWhenBookIsMissing() throws Exception {
+            String requestBody =
+                    """
+                    {
+                        "bookId": 999
+                        }
+                    """;
+
+            mockMvc.perform(
+                            post("/api/v2/loans")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(requestBody))
+                    .andExpect(status().isNotFound());
+        }
+
+        @Test
+        @DisplayName("should create a new loan and return 201 Created when book is available")
+        void shouldCreateLoanWhenBookIsAvailable() throws Exception {
+            String requestBody =
+                    """
+                    {
+                        "bookId": 1
+                        }
+                    """;
+            mockMvc.perform(
+                            post("/api/v2/loans")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(requestBody))
+                    .andExpect(status().isCreated());
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /api/v2/loans")
+    class GetAllLoans {
+
+        @Test
+        @DisplayName("should retrieve all loans and return 200 OK")
+        void shouldRetrieveAllLoans() throws Exception {
+            mockMvc.perform(get("/api/v2/loans").contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("should return an empty list of loans when there are no loans")
+        void shouldReturnEmptyListWhenNoLoans() throws Exception {
+            mockMvc.perform(get("/api/v2/loans").contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data").isEmpty());
+        }
+
+        @Sql(
+                statements =
+                        """
+                        INSERT INTO loan (id, book_id) VALUES (1, 1);
+                        """,
+                executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+        @Test
+        @DisplayName("should return a list of loans when there are existing loans")
+        void shouldReturnListOfLoans() throws Exception {
+            mockMvc.perform(get("/api/v2/loans").contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.data").isArray())
+                    .andExpect(jsonPath("$.data[0].id").value(1))
+                    .andExpect(jsonPath("$.data[0].bookId").value(1));
+        }
     }
 }
