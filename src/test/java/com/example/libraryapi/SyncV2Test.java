@@ -87,14 +87,11 @@ class SyncV2Test {
                     action.andExpect(status().isCreated());
                     successCount++;
                 } catch (AssertionError e) {
-                    try {
-                        action.andExpect(status().isBadRequest());
-                        badRequestCount++;
-                    } catch (AssertionError ex) {
-                        ex.printStackTrace();
-                    }
+                    action.andExpect(status().isBadRequest());
+                    badRequestCount++;
                 }
             }
+            assert action != null : "Expected a ResultActions object, but got null";
         }
         assert successCount == 1
                 : "Expected exactly one successful loan creation, but got " + successCount;
