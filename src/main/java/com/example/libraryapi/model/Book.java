@@ -30,7 +30,6 @@ public class Book {
 
     @Nullable
     @OneToOne(mappedBy = "book")
-    @OnDelete(action = OnDeleteAction.SET_NULL)
     private Loan currentLoan;
 
     /** Default constructor for JPA. Should not be used directly. */
