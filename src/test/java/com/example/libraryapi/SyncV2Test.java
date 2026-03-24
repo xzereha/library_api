@@ -1,5 +1,7 @@
 package com.example.libraryapi;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -91,12 +93,16 @@ class SyncV2Test {
                     badRequestCount++;
                 }
             }
-            assert action != null : "Expected a ResultActions object, but got null";
+            assertNotNull(action, "Expected a ResultActions object, but got null");
         }
-        assert successCount == 1
-                : "Expected exactly one successful loan creation, but got " + successCount;
-        assert badRequestCount == numberOfThreads - 1
-                : "Expected exactly one bad request response, but got " + badRequestCount;
+        assertEquals(
+                1,
+                successCount,
+                "Expected exactly one successful loan creation, but got " + successCount);
+        assertEquals(
+                numberOfThreads - 1,
+                badRequestCount,
+                "Expected exactly one bad request response, but got " + badRequestCount);
 
         executorService.shutdown();
     }
