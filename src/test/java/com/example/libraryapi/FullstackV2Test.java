@@ -78,4 +78,21 @@ class FullstackV2Test {
         var loanResponse = restTemplate.postForEntity("/api/v2/loans", loanEntity, String.class);
         assertEquals(HttpStatus.CREATED, loanResponse.getStatusCode());
     }
+
+    @Test
+    void testInvalidMediaType() {
+        String request =
+                """
+                {
+                    "name": "George Orwell"
+                }
+                """;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_XML);
+        headers.setAccept(java.util.List.of(MediaType.APPLICATION_JSON));
+        HttpEntity<String> entity = new HttpEntity<>(request, headers);
+        ResponseEntity<String> response =
+                restTemplate.postForEntity("/api/v2/authors", entity, String.class);
+        assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE, response.getStatusCode());
+    }
 }
