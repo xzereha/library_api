@@ -2,6 +2,7 @@ package com.example.libraryapi.model;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,7 +30,7 @@ public class Book {
     private Integer publishedYear;
 
     @Nullable
-    @OneToOne(mappedBy = "book")
+    @OneToOne(mappedBy = "book", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Loan currentLoan;
 
     /** Default constructor for JPA. Should not be used directly. */
