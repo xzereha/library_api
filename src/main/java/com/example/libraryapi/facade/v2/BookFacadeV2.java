@@ -1,6 +1,6 @@
 package com.example.libraryapi.facade.v2;
 
-import com.example.libraryapi.dto.v1.BookRequestV1;
+import com.example.libraryapi.dto.v2.BookRequestV2;
 import com.example.libraryapi.dto.v2.BookResponseV2;
 import com.example.libraryapi.service.BookQuery;
 import com.example.libraryapi.service.BookService;
@@ -24,18 +24,18 @@ public class BookFacadeV2 {
     }
 
     /**
-     * Creates a new book based on the provided BookRequestV1 and returns a BookResponseV2.
+     * Creates a new book based on the provided BookRequestV2 and returns a BookResponseV2.
      *
-     * @param bookRequestV1 The request object containing the details of the book to be created
+     * @param bookRequestV2 The request object containing the details of the book to be created
      * @return A BookResponseV2 containing the details of the created book
      */
-    public BookResponseV2 createBook(BookRequestV1 bookRequestV1) {
+    public BookResponseV2 createBook(BookRequestV2 bookRequestV2) {
         var book =
                 bookService.createBook(
-                        bookRequestV1.title(),
-                        bookRequestV1.author(),
-                        bookRequestV1.isbn(),
-                        bookRequestV1.publishedYear());
+                        bookRequestV2.title(),
+                        bookRequestV2.authorId(),
+                        bookRequestV2.isbn(),
+                        bookRequestV2.publishedYear());
         return BookResponseV2.fromBook(book);
     }
 

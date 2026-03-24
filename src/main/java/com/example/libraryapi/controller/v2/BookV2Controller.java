@@ -1,7 +1,7 @@
 package com.example.libraryapi.controller.v2;
 
 import com.example.libraryapi.dto.ResponseWrapper;
-import com.example.libraryapi.dto.v1.BookRequestV1;
+import com.example.libraryapi.dto.v2.BookRequestV2;
 import com.example.libraryapi.dto.v2.BookResponseV2;
 import com.example.libraryapi.facade.v2.BookFacadeV2;
 import com.example.libraryapi.service.BookQuery;
@@ -57,7 +57,7 @@ public class BookV2Controller {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseWrapper<BookResponseV2>> createBook(
-            @Valid @RequestBody final BookRequestV1 bookRequest) {
+            @Valid @RequestBody final BookRequestV2 bookRequest) {
         var created = bookFacadeV2.createBook(bookRequest);
         var response = new ResponseWrapper<>(created, 2);
         var location = URI.create("/api/v2/books/" + created.id());

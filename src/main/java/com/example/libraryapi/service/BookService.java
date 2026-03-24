@@ -1,5 +1,6 @@
 package com.example.libraryapi.service;
 
+import com.example.libraryapi.exception.AuthorNotFoundException;
 import com.example.libraryapi.exception.BookNotFoundException;
 import com.example.libraryapi.model.Author;
 import com.example.libraryapi.model.Book;
@@ -30,6 +31,20 @@ public interface BookService {
             @Nonnull Author author,
             String isbn,
             Integer publishedYear);
+
+    /**
+     * Creates a new book with the given title, author ID, ISBN, and published year. The author is
+     * provided as an ID, and the service will handle finding the corresponding Author entity.
+     *
+     * @param title the title of the book
+     * @param authorId the ID of the author of the book
+     * @param isbn the ISBN of the book
+     * @param publishedYear the year the book was published
+     * @return the created Book object
+     * @throws AuthorNotFoundException if no author with the given ID is found
+     */
+    @Nonnull
+    Book createBook(String title, Long authorId, String isbn, Integer publishedYear);
 
     /**
      * Creates a new book with the given title, author name, ISBN, and published year. The author is

@@ -1,5 +1,6 @@
 package com.example.libraryapi.service;
 
+import com.example.libraryapi.exception.AuthorNotFoundException;
 import com.example.libraryapi.exception.BookNotFoundException;
 import com.example.libraryapi.model.Author;
 import com.example.libraryapi.model.Book;
@@ -45,6 +46,15 @@ public class BookServiceImpl implements BookService {
         book.setPublishedYear(publishedYear);
 
         return bookRepository.save(book);
+    }
+
+    @Override
+    public Book createBook(String title, Long authorId, String isbn, Integer publishedYear) {
+        var author =
+                authorRepository
+                        .findById(authorId)
+                        .orElseThrow(() -> new AuthorNotFoundException(authorId));
+        return createBook(title, author, isbn, publishedYear);
     }
 
     @Override
