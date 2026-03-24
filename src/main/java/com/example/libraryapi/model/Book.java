@@ -9,6 +9,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 /** Entity representing a book in the library system. */
 @Entity
 public class Book {
@@ -17,12 +20,17 @@ public class Book {
     private Long id;
 
     @Nonnull private String title;
-    @ManyToOne private Author author;
+
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Author author;
+
     private String isbn;
     private Integer publishedYear;
 
     @Nullable
     @OneToOne(mappedBy = "book")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private Loan currentLoan;
 
     /** Default constructor for JPA. Should not be used directly. */

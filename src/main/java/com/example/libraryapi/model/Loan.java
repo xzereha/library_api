@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Date;
 
@@ -19,7 +21,10 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne @Nonnull private Book book;
+    @OneToOne
+    @Nonnull
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Book book;
 
     @Nonnull
     @ColumnDefault("CURRENT_DATE")
