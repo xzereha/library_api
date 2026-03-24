@@ -77,12 +77,4 @@ public class Book {
     public boolean isAvailable() {
         return currentLoan == null;
     }
-
-    public Loan getCurrentLoan() {
-        return currentLoan;
-    }
-
-    public void setCurrentLoan(Loan currentLoan) {
-        this.currentLoan = currentLoan;
-    }
 }

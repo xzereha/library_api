@@ -76,8 +76,4 @@ public class Loan {
     public Date getReturnDate() {
         return returnDate;
     }
-
-    public void setReturnDate(Date returnDate) {
-        this.returnDate = returnDate;
-    }
 }
