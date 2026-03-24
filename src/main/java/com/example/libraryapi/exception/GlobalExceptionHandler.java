@@ -120,6 +120,23 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles HttpMediaTypeNotSupportedException and returns a 415 Unsupported Media Type response
+     * with error details. This exception is typically thrown when a client sends a request with an
+     * unsupported Content-Type header (e.g., when the client sends XML instead of JSON).
+     *
+     * @param ex The HttpMediaTypeNotSupportedException that was thrown
+     * @param request The HttpServletRequest that resulted in the exception
+     * @return A ProblemDetail object containing error details to be returned in the response body
+     */
+    @ExceptionHandler(org.springframework.web.HttpMediaTypeNotSupportedException.class)
+    public ProblemDetail handleInvalidMediaType(Exception ex, HttpServletRequest request) {
+        return buildProblem(
+                HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+                "Unsupported media type. Please ensure your Content-Type header is set correctly.",
+                request);
+    }
+
+    /**
      * Handles any unexpected exceptions that are not explicitly handled by other methods and
      * returns a 500 Internal Server Error response with error details. This serves as a catch-all
      * handler for any exceptions that may occur in the application.
