@@ -1,8 +1,12 @@
 package com.example.libraryapi.service;
 
 import com.example.libraryapi.exception.BookNotAvailableException;
+import com.example.libraryapi.exception.BookNotFoundException;
 import com.example.libraryapi.model.Loan;
+import com.example.libraryapi.repository.BookRepository;
 import com.example.libraryapi.repository.LoanRepository;
+
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -14,6 +18,7 @@ import java.util.List;
 public class LoanService {
     private final LoanRepository loanRepository;
     private final BookService bookService;
+    private final BookRepository bookRepository;
 
     /**
      * Constructor for LoanService. This constructor is used to inject the LoanRepository dependency
@@ -25,9 +30,11 @@ public class LoanService {
      * @param bookService the service for managing Book entities, injected by Spring's dependency
      *     injection mechanism
      */
-    public LoanService(LoanRepository loanRepository, BookService bookService) {
+    public LoanService(
+            LoanRepository loanRepository, BookService bookService, BookRepository bookRepository) {
         this.loanRepository = loanRepository;
         this.bookService = bookService;
+        this.bookRepository = bookRepository;
     }
 
     public List<Loan> getAllLoans() {
@@ -45,8 +52,12 @@ public class LoanService {
      * @throws BookNotAvailableException if the book is not available for loaning
      * @throws BookNotFoundException if the book with the specified ID does not exist
      */
+    @Transactional
     public Loan createLoan(Long bookId) {
-        var book = bookService.getBookById(bookId);
+        var book =
+                bookRepository
+                        .findByIdForUpdate(bookId)
+                        .orElseThrow(() -> new BookNotFoundException(bookId));
         if (!book.isAvailable()) {
             throw new BookNotAvailableException(bookId);
         }
