@@ -69,6 +69,31 @@ public class BookV2ApiIntegrationTest {
                     .andExpect(jsonPath("$.data.available").value(true));
         }
 
+        @Test
+        void withInvalidAuthorId() throws Exception {
+            String bookJson =
+                    """
+                    {
+                        "title": "The Great Gatsby",
+                        "authorId": 999,
+                        "isbn": "978-0743273565",
+                        "publishedYear": 1925
+                    }
+                    """;
+
+            mockMvc.perform(
+                            post("/api/v2/books")
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(bookJson))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.status").value(404))
+                    .andExpect(jsonPath("$.error").value("Not Found"))
+                    .andExpect(
+                            jsonPath("$.message")
+                                    .value(containsString("Author with ID: 999 not found")))
+                    .andExpect(jsonPath("$.path").value("/api/v2/books"));
+        }
+
         @Sql(
                 statements = "INSERT INTO author (id, name) VALUES (2, 'Herman Melville');",
                 executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
