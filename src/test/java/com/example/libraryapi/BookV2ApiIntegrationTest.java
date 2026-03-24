@@ -39,13 +39,16 @@ public class BookV2ApiIntegrationTest {
     @Nested
     class PostBooks {
 
+        @Sql(
+                statements = "INSERT INTO author (id, name) VALUES (1, 'F. Scott Fitzgerald');",
+                executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         @Test
         void withAllFields() throws Exception {
             String bookJson =
                     """
                     {
                         "title": "The Great Gatsby",
-                        "author": "F. Scott Fitzgerald",
+                        "authorId": 1,
                         "isbn": "978-0743273565",
                         "publishedYear": 1925
                     }
@@ -66,13 +69,16 @@ public class BookV2ApiIntegrationTest {
                     .andExpect(jsonPath("$.data.available").value(true));
         }
 
+        @Sql(
+                statements = "INSERT INTO author (id, name) VALUES (2, 'Herman Melville');",
+                executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
         @Test
         void withOptionalFieldsMissing() throws Exception {
             String bookJson =
                     """
                     {
                         "title": "Moby Dick",
-                        "author": "Herman Melville"
+                        "authorId": 2
                     }
                     """;
 
