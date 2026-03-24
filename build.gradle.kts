@@ -1,6 +1,7 @@
 plugins {
 	java
 	checkstyle
+    jacoco
 	id("org.springframework.boot") version "4.0.3"
 	id("io.spring.dependency-management") version "1.1.7"
 }
@@ -41,4 +42,20 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.named<org.gradle.testing.jacoco.tasks.JacocoReport>("jacocoTestReport") {
+	dependsOn(tasks.test)
+	reports {
+		html.required.set(true)
+		xml.required.set(true)
+        html.outputLocation = layout.buildDirectory.dir("coverage/html")
+	}
+	val coverageExcludes = listOf("com/example/libraryapi/LibraryApi*")
+
+	// Configure classDirectories from the standard output directory to avoid requiring SourceSetContainer
+	val classesDir = fileTree("${buildDir.path}/classes/java/main") {
+		exclude(coverageExcludes)
+	}
+	classDirectories.setFrom(classesDir)
 }
