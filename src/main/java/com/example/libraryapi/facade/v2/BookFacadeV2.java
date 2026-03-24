@@ -40,16 +40,6 @@ public class BookFacadeV2 {
     }
 
     /**
-     * Retrieves all books and returns a list of BookResponseV2.
-     *
-     * @return A list of BookResponseV2 containing the details of all books
-     */
-    public List<BookResponseV2> getAllBooks() {
-        var books = bookService.getAllBooks();
-        return books.stream().map(BookResponseV2::fromBook).toList();
-    }
-
-    /**
      * Retrieves books based on the provided query parameters and returns a list of BookResponseV2.
      *
      * @param query The query object containing the search criteria for books
