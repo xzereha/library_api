@@ -4,17 +4,39 @@ import com.example.libraryapi.exception.AuthorNotFoundException;
 import com.example.libraryapi.exception.BookNotFoundException;
 import com.example.libraryapi.model.Author;
 import com.example.libraryapi.model.Book;
+import com.example.libraryapi.repository.AuthorRepository;
+import com.example.libraryapi.repository.BookRepository;
+import com.example.libraryapi.repository.BookSpecifications;
 
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotBlank;
 
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 /**
- * Service layer interface for managing books. Provides methods to manipulate book data and retrieve
- * book information.
+ * Service layer implementation for managing books. Provides methods to manipulate book data and
+ * retrieve book information. This service1 interacts with the BookRepository and AuthorRepository
+ * to perform CRUD operations and handle business logic related to books and their associated
+ * authors.
  */
-public interface BookService {
+@Service
+public class BookService {
+    private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
+
+    /**
+     * Constructs a new BookServiceImpl with the given BookRepository and AuthorRepository.
+     *
+     * @param bookRepository the repository for managing books
+     * @param authorRepository the repository for managing authors
+     */
+    public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
+        this.bookRepository = bookRepository;
+        this.authorRepository = authorRepository;
+    }
+
     /**
      * Creates a new book with the given title, author, ISBN, and published year. The author is
      * provided as an Author entity.
@@ -26,11 +48,18 @@ public interface BookService {
      * @return the created Book object
      */
     @Nonnull
-    Book createBook(
+    public Book createBook(
             @Nonnull @NotBlank String title,
             @Nonnull Author author,
             String isbn,
-            Integer publishedYear);
+            Integer publishedYear) {
+        var book = new Book();
+        book.setTitle(title);
+        book.setAuthor(author);
+        book.setIsbn(isbn);
+        book.setPublishedYear(publishedYear);
+        return bookRepository.save(book);
+    }
 
     /**
      * Creates a new book with the given title, author ID, ISBN, and published year. The author is
@@ -44,7 +73,13 @@ public interface BookService {
      * @throws AuthorNotFoundException if no author with the given ID is found
      */
     @Nonnull
-    Book createBook(String title, Long authorId, String isbn, Integer publishedYear);
+    public Book createBook(String title, Long authorId, String isbn, Integer publishedYear) {
+        var author =
+                authorRepository
+                        .findById(authorId)
+                        .orElseThrow(() -> new AuthorNotFoundException(authorId));
+        return createBook(title, author, isbn, publishedYear);
+    }
 
     /**
      * Creates a new book with the given title, author name, ISBN, and published year. The author is
@@ -70,11 +105,20 @@ public interface BookService {
      */
     @Deprecated(since = "2.0", forRemoval = true)
     @Nonnull
-    Book createBook(
+    public Book createBook(
             @Nonnull @NotBlank String title,
             @Nonnull @NotBlank String author,
             String isbn,
-            Integer publishedYear);
+            Integer publishedYear) {
+        Author authorEntity = authorRepository.findByName(author);
+        // TODO: This is a hacky solution to keep V1 working
+        if (authorEntity == null) {
+            authorEntity = new Author();
+            authorEntity.setName(author);
+            authorEntity = authorRepository.save(authorEntity);
+        }
+        return createBook(title, authorEntity, isbn, publishedYear);
+    }
 
     /**
      * Retrieves all books from the repository.
@@ -82,7 +126,9 @@ public interface BookService {
      * @return a list of all books
      */
     @Nonnull
-    List<Book> getAllBooks();
+    public List<Book> getAllBooks() {
+        return bookRepository.findAll();
+    }
 
     /**
      * Retrieves a book by its ID. If the book is not found, a BookNotFoundException is thrown.
@@ -92,7 +138,9 @@ public interface BookService {
      * @throws BookNotFoundException if no book with the given ID is found
      */
     @Nonnull
-    Book getBookById(@Nonnull Long id) throws BookNotFoundException;
+    public Book getBookById(@Nonnull Long id) throws BookNotFoundException {
+        return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
+    }
 
     /**
      * Queries books based on the specified criteria in the BookQuery object. This method allows for
@@ -105,5 +153,8 @@ public interface BookService {
      * @return a list of books that match the specified query criteria
      */
     @Nonnull
-    List<Book> queryBooks(@Nonnull BookQuery query);
+    public List<Book> queryBooks(@Nonnull BookQuery query) {
+        var spec = BookSpecifications.fromQuery(query);
+        return bookRepository.findAll(spec);
+    }
 }
