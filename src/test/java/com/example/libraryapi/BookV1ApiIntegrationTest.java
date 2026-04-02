@@ -21,7 +21,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 /** Integration tests for the v1 book endpoints. */
-@SpringBootTest
+@SpringBootTest(properties = "spring.cache.type=none")
 @AutoConfigureMockMvc
 @Sql(
         statements =

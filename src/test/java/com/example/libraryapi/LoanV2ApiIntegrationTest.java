@@ -31,7 +31,9 @@ import org.springframework.test.web.servlet.MockMvc;
                 (1, 'Harry Potter and the Sorcerer''s Stone', 1);
                 """,
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+        properties = "spring.cache.type=none",
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class LoanV2ApiIntegrationTest {
     @Autowired private MockMvc mockMvc;

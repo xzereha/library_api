@@ -28,7 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
                 ALTER TABLE author ALTER COLUMN id RESTART WITH 1;
                 """,
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@SpringBootTest
+@SpringBootTest(properties = "spring.cache.type=none")
 @AutoConfigureMockMvc
 public class AuthorV2ApiIntegrationTest {
     @Autowired private MockMvc mockMvc;

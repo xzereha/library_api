@@ -32,7 +32,9 @@ import org.springframework.test.context.jdbc.Sql;
                 ALTER TABLE author ALTER COLUMN id RESTART WITH 1;
                 """)
 @AutoConfigureTestRestTemplate
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+        properties = "spring.cache.type=none",
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FullstackV2Test {
     @Autowired private TestRestTemplate restTemplate;
 

@@ -22,7 +22,9 @@ import java.util.concurrent.Executors;
  * Synchronization tests for the V2 API. These tests ensure that the V2 API endpoints are properly
  * synchronized with the underlying data model and that concurrent requests are handled correctly.
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+        properties = "spring.cache.type=none",
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class SyncV2Test {
     @Autowired private MockMvc mockMvc;

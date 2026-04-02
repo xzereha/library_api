@@ -11,6 +11,8 @@ import com.example.libraryapi.repository.BookSpecifications;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotBlank;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,6 +50,7 @@ public class BookService {
      * @return the created Book object
      */
     @Nonnull
+    @CacheEvict(value = "Books", allEntries = true)
     public Book createBook(
             @Nonnull @NotBlank String title,
             @Nonnull Author author,
@@ -73,6 +76,7 @@ public class BookService {
      * @throws AuthorNotFoundException if no author with the given ID is found
      */
     @Nonnull
+    @CacheEvict(value = "Books", allEntries = true)
     public Book createBook(String title, Long authorId, String isbn, Integer publishedYear) {
         var author =
                 authorRepository
@@ -105,6 +109,7 @@ public class BookService {
      */
     @Deprecated(since = "2.0", forRemoval = true)
     @Nonnull
+    @CacheEvict(value = "Books", allEntries = true)
     public Book createBook(
             @Nonnull @NotBlank String title,
             @Nonnull @NotBlank String author,
@@ -126,6 +131,7 @@ public class BookService {
      * @return a list of all books
      */
     @Nonnull
+    @Cacheable("Books")
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
@@ -138,6 +144,7 @@ public class BookService {
      * @throws BookNotFoundException if no book with the given ID is found
      */
     @Nonnull
+    @Cacheable("Books")
     public Book getBookById(@Nonnull Long id) throws BookNotFoundException {
         return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
     }
