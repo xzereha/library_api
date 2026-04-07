@@ -80,13 +80,13 @@ public class BookV2Controller {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseWrapper<List<BookResponseV2>>> getBooks(
             @Parameter(name = "author", description = "The author of the books", required = false)
-                    @RequestParam(required = false)
+                    @RequestParam(value = "author", required = false)
                     String author,
             @Parameter(name = "title", description = "The title of the books", required = false)
-                    @RequestParam(required = false)
+                    @RequestParam(value = "title", required = false)
                     String title,
             @Parameter(name = "isbn", description = "The ISBN of the books", required = false)
-                    @RequestParam(required = false)
+                    @RequestParam(value = "isbn", required = false)
                     String isbn) {
         var query = BookQuery.builder().withAuthor(author).withTitle(title).withIsbn(isbn).build();
         var booksByAuthor = bookFacadeV2.queryBooks(query);
@@ -103,7 +103,7 @@ public class BookV2Controller {
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseWrapper<BookResponseV2>> getBookById(
-            @PathVariable final Long id) {
+            @PathVariable(name = "id", required = true) final Long id) {
         var book = bookFacadeV2.getBookById(id);
         var response = new ResponseWrapper<>(book, 2);
         return ResponseEntity.ok(response);

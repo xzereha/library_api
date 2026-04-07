@@ -80,7 +80,8 @@ public class BookV1Controller {
      *     is found
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookResponseV1> getBookById(@PathVariable final Long id) {
+    public ResponseEntity<BookResponseV1> getBookById(
+            @PathVariable(name = "id", required = true) final Long id) {
         var book = bookFacade.getBookById(id);
         return ResponseEntity.ok(book);
     }
