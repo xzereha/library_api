@@ -6,8 +6,6 @@ import com.example.libraryapi.dto.v2.BookResponseV2;
 import com.example.libraryapi.facade.v2.BookFacadeV2;
 import com.example.libraryapi.service.BookQuery;
 
-import io.swagger.v3.oas.annotations.Parameter;
-
 import jakarta.validation.Valid;
 
 import org.springframework.http.MediaType;
@@ -79,15 +77,9 @@ public class BookV2Controller {
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseWrapper<List<BookResponseV2>>> getBooks(
-            @Parameter(name = "author", description = "The author of the books", required = false)
-                    @RequestParam(value = "author", required = false)
-                    String author,
-            @Parameter(name = "title", description = "The title of the books", required = false)
-                    @RequestParam(value = "title", required = false)
-                    String title,
-            @Parameter(name = "isbn", description = "The ISBN of the books", required = false)
-                    @RequestParam(value = "isbn", required = false)
-                    String isbn) {
+            @RequestParam(value = "author", required = false) String author,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "isbn", required = false) String isbn) {
         var query = BookQuery.builder().withAuthor(author).withTitle(title).withIsbn(isbn).build();
         var booksByAuthor = bookFacadeV2.queryBooks(query);
         var response = new ResponseWrapper<>(booksByAuthor, 2);
