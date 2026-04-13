@@ -46,7 +46,7 @@ class SyncV2Test {
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Test
     void testConcurrentLoanCreation() throws Exception {
-        final int numberOfThreads = 2;
+        final int numberOfThreads = 100;
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
         CountDownLatch start = new CountDownLatch(1);
         CountDownLatch done = new CountDownLatch(numberOfThreads);
