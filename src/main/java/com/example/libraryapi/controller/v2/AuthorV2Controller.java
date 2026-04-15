@@ -91,7 +91,7 @@ public class AuthorV2Controller {
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseWrapper<AuthorResponseV2>> getAuthorById(
-            @PathVariable final Long id) {
+            @PathVariable(name = "id", required = true) final Long id) {
         var author = authorService.getAuthorById(id);
         var dto = new AuthorResponseV2(author.getId(), author.getName());
         var response = new ResponseWrapper<>(dto, 2);
@@ -108,7 +108,7 @@ public class AuthorV2Controller {
      */
     @GetMapping(value = "/{id}/books", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseWrapper<List<BookResponseV2>>> getBooksByAuthorId(
-            @PathVariable final Long id) {
+            @PathVariable(name = "id", required = true) final Long id) {
         var books = authorService.getBooksByAuthorId(id);
         var dtos = books.stream().map(BookResponseV2::fromBook).toList();
         var response = new ResponseWrapper<>(dtos, 2);

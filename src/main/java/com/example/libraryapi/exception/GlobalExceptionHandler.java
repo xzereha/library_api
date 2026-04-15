@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 
@@ -46,6 +47,19 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleBookNotFoundException(
             BookNotFoundException ex, HttpServletRequest request) {
         return buildProblem(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    }
+
+    /**
+     * Handles NoResourceFoundException and returns a 404 Not Found response with error details.
+     *
+     * @param ex The NoResourceFoundException that was thrown
+     * @param request The HttpServletRequest that resulted in the exception
+     * @return A ProblemDetail object containing error details to be returned in the response body
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ProblemDetail noResourceFoundException(
+            NoResourceFoundException ex, HttpServletRequest request) {
+        return buildProblem(HttpStatus.NOT_FOUND, "Resource not found", request);
     }
 
     /**

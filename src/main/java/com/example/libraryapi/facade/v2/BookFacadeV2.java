@@ -47,8 +47,13 @@ public class BookFacadeV2 {
      *     criteria
      */
     public List<BookResponseV2> queryBooks(BookQuery query) {
-        var books = bookService.queryBooks(query);
-        return books.stream().map(BookResponseV2::fromBook).toList();
+        if (query.isEmpty()) {
+            var books = bookService.getAllBooks();
+            return books.stream().map(BookResponseV2::fromBook).toList();
+        } else {
+            var books = bookService.queryBooks(query);
+            return books.stream().map(BookResponseV2::fromBook).toList();
+        }
     }
 
     /**

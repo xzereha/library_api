@@ -66,4 +66,13 @@ public record BookQuery(Optional<String> author, Optional<String> title, Optiona
             return new BookQuery(author, title, isbn);
         }
     }
+
+    /**
+     * Check if no query arguments are set.
+     *
+     * @return True if there are no arguments
+     */
+    public boolean isEmpty() {
+        return this.author.isEmpty() && this.title.isEmpty() && this.isbn.isEmpty();
+    }
 }
