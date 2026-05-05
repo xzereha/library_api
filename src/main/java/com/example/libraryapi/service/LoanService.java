@@ -17,7 +17,6 @@ import java.util.List;
 @Service
 public class LoanService {
     private final LoanRepository loanRepository;
-    private final BookService bookService;
     private final BookRepository bookRepository;
 
     /**
@@ -27,13 +26,11 @@ public class LoanService {
      *
      * @param loanRepository the repository for managing Loan entities, injected by Spring's
      *     dependency injection mechanism
-     * @param bookService the service for managing Book entities, injected by Spring's dependency
-     *     injection mechanism
+     * @param bookRepository the repository for managing Book entities, injected by Spring's
+     *     dependency injection mechanism
      */
-    public LoanService(
-            LoanRepository loanRepository, BookService bookService, BookRepository bookRepository) {
+    public LoanService(LoanRepository loanRepository, BookRepository bookRepository) {
         this.loanRepository = loanRepository;
-        this.bookService = bookService;
         this.bookRepository = bookRepository;
     }
 
