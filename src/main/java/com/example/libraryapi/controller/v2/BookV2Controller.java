@@ -81,8 +81,8 @@ public class BookV2Controller {
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "isbn", required = false) String isbn) {
         var query = BookQuery.builder().withAuthor(author).withTitle(title).withIsbn(isbn).build();
-        var booksByAuthor = bookFacadeV2.queryBooks(query);
-        var response = new ResponseWrapper<>(booksByAuthor, 2);
+        var books = bookFacadeV2.queryBooks(query);
+        var response = new ResponseWrapper<>(books, 2);
         return ResponseEntity.ok(response);
     }
 
