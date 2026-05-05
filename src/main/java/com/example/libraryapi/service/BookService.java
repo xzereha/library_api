@@ -14,6 +14,7 @@ import jakarta.validation.constraints.NotBlank;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ import java.util.List;
  * authors.
  */
 @Service
+@Validated
 public class BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
